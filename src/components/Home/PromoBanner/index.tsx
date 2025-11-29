@@ -13,19 +13,19 @@ const PromoBanner = () => {
             </span>
 
             <h2 className="font-bold text-xl lg:text-heading-4 xl:text-heading-3 text-dark mb-5">
-              UP TO 30% OFF
+              HASTA 30% DE DESCUENTO
             </h2>
 
             <p>
-              iPhone 14 has the same superspeedy chip that’s in iPhone 13 Pro,
-              A15 Bionic, with a 5‑core GPU, powers all the latest features.
+              El iPhone 14 tiene el mismo chip superrápido que el iPhone 13 Pro,
+              A15 Bionic, con GPU de 5 núcleos, que alimenta todas las últimas funciones.
             </p>
 
             <a
               href="#"
               className="inline-flex font-medium text-custom-sm text-white bg-blue py-[11px] px-9.5 rounded-md ease-out duration-200 hover:bg-blue-dark mt-7.5"
             >
-              Buy Now
+              Comprar Ahora
             </a>
           </div>
 
@@ -51,22 +51,22 @@ const PromoBanner = () => {
 
             <div className="text-right">
               <span className="block text-lg text-dark mb-1.5">
-                Foldable Motorised Treadmill
+                Cinta de Correr Motorizada Plegable
               </span>
 
               <h2 className="font-bold text-xl lg:text-heading-4 text-dark mb-2.5">
-                Workout At Home
+                Entrena en Casa
               </h2>
 
               <p className="font-semibold text-custom-1 text-teal">
-                Flat 20% off
+                20% de descuento
               </p>
 
               <a
                 href="#"
                 className="inline-flex font-medium text-custom-sm text-white bg-teal py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-teal-dark mt-9"
               >
-                Grab Now
+                Obtener Ahora
               </a>
             </div>
           </div>
@@ -87,19 +87,19 @@ const PromoBanner = () => {
               </span>
 
               <h2 className="font-bold text-xl lg:text-heading-4 text-dark mb-2.5">
-                Up to <span className="text-orange">40%</span> off
+                Hasta <span className="text-orange">40%</span> de descuento
               </h2>
 
               <p className="max-w-[285px] text-custom-sm">
-                The aerospace-grade titanium case strikes the perfect balance of
-                everything.
+                La carcasa de titanio de grado aeroespacial logra el equilibrio perfecto
+                en todo.
               </p>
 
               <a
                 href="#"
                 className="inline-flex font-medium text-custom-sm text-white bg-orange py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-orange-dark mt-7.5"
               >
-                Buy Now
+                Comprar Ahora
               </a>
             </div>
           </div>

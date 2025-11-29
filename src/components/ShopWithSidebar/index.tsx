@@ -1,15 +1,14 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
-import CustomSelect from "./CustomSelect";
-import CategoryDropdown from "./CategoryDropdown";
-import GenderDropdown from "./GenderDropdown";
-import SizeDropdown from "./SizeDropdown";
-import ColorsDropdwon from "./ColorsDropdwon";
-import PriceDropdown from "./PriceDropdown";
 import shopData from "../Shop/shopData";
 import SingleGridItem from "../Shop/SingleGridItem";
 import SingleListItem from "../Shop/SingleListItem";
+import CategoryDropdown from "./CategoryDropdown";
+import CustomSelect from "./CustomSelect";
+import GenderDropdown from "./GenderDropdown";
+import PriceDropdown from "./PriceDropdown";
+import SizeDropdown from "./SizeDropdown";
 
 const ShopWithSidebar = () => {
   const [productStyle, setProductStyle] = useState("grid");
@@ -164,9 +163,6 @@ const ShopWithSidebar = () => {
 
                   {/* // <!-- size box --> */}
                   <SizeDropdown />
-
-                  {/* // <!-- color box --> */}
-                  <ColorsDropdwon />
 
                   {/* // <!-- price range box --> */}
                   <PriceDropdown />

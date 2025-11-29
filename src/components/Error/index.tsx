@@ -20,12 +20,12 @@ const Error = () => {
               />
 
               <h2 className="font-medium text-dark text-xl sm:text-2xl mb-3">
-                Sorry, the page can’t be found
+                Lo sentimos, no se puede encontrar la página
               </h2>
 
               <p className="max-w-[410px] w-full mx-auto mb-7.5">
-                The page you were looking for appears to have been moved,
-                deleted or does not exist.
+                La página que estabas buscando parece haber sido movida,
+                eliminada o no existe.
               </p>
 
               <Link
@@ -45,7 +45,7 @@ const Error = () => {
                     fill=""
                   />
                 </svg>
-                Back to Home
+                Volver al Inicio
               </Link>
             </div>
           </div>

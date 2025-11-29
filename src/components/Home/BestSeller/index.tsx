@@ -18,10 +18,10 @@ const BestSeller = () => {
                 width={17}
                 height={17}
               />
-              This Month
+              Este Mes
             </span>
             <h2 className="font-semibold text-xl xl:text-heading-5 text-dark">
-              Best Sellers
+              Más Vendidos
             </h2>
           </div>
         </div>
@@ -38,7 +38,7 @@ const BestSeller = () => {
             href="/shop-without-sidebar"
             className="inline-flex font-medium text-custom-sm py-3 px-7 sm:px-12.5 rounded-md border-gray-3 border bg-gray-1 text-dark ease-out duration-200 hover:bg-dark hover:text-white hover:border-transparent"
           >
-            View All
+            Ver Todos
           </Link>
         </div>
       </div>

@@ -37,15 +37,17 @@ const CartSidebarModal = () => {
 
   return (
     <div
-      className={`fixed top-0 left-0 z-99999 overflow-y-auto no-scrollbar w-full h-screen bg-dark/70 ease-linear duration-300 ${
-        isCartModalOpen ? "translate-x-0" : "translate-x-full"
+      className={`fixed top-0 left-0 z-99999 w-full h-screen bg-dark/70 transition-opacity duration-200 ${
+        isCartModalOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
       }`}
     >
-      <div className="flex items-center justify-end">
-        <div className="w-full max-w-[500px] shadow-1 bg-white px-4 sm:px-7.5 lg:px-11 relative modal-content">
+      <div className="flex items-center justify-end h-full">
+        <div className={`w-full max-w-[500px] h-full shadow-1 bg-white px-4 sm:px-7.5 lg:px-11 relative modal-content overflow-y-auto no-scrollbar transition-transform duration-200 ease-out ${
+          isCartModalOpen ? "translate-x-0" : "translate-x-full"
+        }`}>
           <div className="sticky top-0 bg-white flex items-center justify-between pb-7 pt-4 sm:pt-7.5 lg:pt-11 border-b border-gray-3 mb-7.5">
             <h2 className="font-medium text-dark text-lg sm:text-2xl">
-              Cart View
+              Ver Carrito
             </h2>
             <button
               onClick={() => closeCartModal()}
@@ -104,14 +106,14 @@ const CartSidebarModal = () => {
                 href="/cart"
                 className="w-full flex justify-center font-medium text-white bg-blue py-[13px] px-6 rounded-md ease-out duration-200 hover:bg-blue-dark"
               >
-                View Cart
+                Ver Carrito
               </Link>
 
               <Link
                 href="/checkout"
                 className="w-full flex justify-center font-medium text-white bg-dark py-[13px] px-6 rounded-md ease-out duration-200 hover:bg-opacity-95"
               >
-                Checkout
+                Finalizar Compra
               </Link>
             </div>
           </div>
