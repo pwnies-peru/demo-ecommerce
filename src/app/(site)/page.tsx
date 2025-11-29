@@ -2,8 +2,8 @@ import Home from "@/components/Home";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "NextCommerce | Nextjs E-commerce template",
-  description: "This is Home for NextCommerce Template",
+  title: "Mercadillo Libre | Tu tienda en línea",
+  description: "Mercadillo Libre, lo mejor en compras en línea.",
   // other metadata
 };
 
