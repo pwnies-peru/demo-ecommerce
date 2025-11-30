@@ -35,9 +35,9 @@ export function UserMenu() {
         className="flex items-center gap-2 hover:opacity-80 transition-opacity"
       >
         <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue to-blue-dark flex items-center justify-center text-white font-semibold text-sm">
-          {user.email?.[0].toUpperCase() || 'D'}
+          S
         </div>
-        <div className="hidden sm:block text-left">
+        <div className="hidden xl:block text-left">
           <span className="block text-2xs text-dark-4 uppercase">
             Cuenta
           </span>
@@ -46,7 +46,7 @@ export function UserMenu() {
           </p>
         </div>
         <svg
-          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`hidden xl:block w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
