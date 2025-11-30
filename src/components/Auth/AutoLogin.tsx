@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { ensureDemoUserLoggedIn } from '@/lib/supabase/auto-login'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 /**
  * This component automatically logs in the demo user on app initialization
@@ -16,7 +16,7 @@ export function AutoLogin({ children }: { children: React.ReactNode }) {
     const performAutoLogin = async () => {
       try {
         const result = await ensureDemoUserLoggedIn()
-        
+
         if (result.success) {
           if (result.autoLoggedIn) {
             console.log('✓ Auto-logged in as demo user')
@@ -46,7 +46,7 @@ export function AutoLogin({ children }: { children: React.ReactNode }) {
         <div className="text-center">
           <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-blue border-r-transparent mb-4"></div>
           <h3 className="font-semibold text-xl text-dark mb-2">
-            Iniciando sesión...
+            Preparando todo para ti...
           </h3>
           <p className="text-dark-4">Preparando tu experiencia demo</p>
         </div>

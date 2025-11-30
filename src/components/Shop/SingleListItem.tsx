@@ -6,8 +6,8 @@ import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { updateQuickView } from "@/redux/features/quickView-slice";
 import { addItemToCart } from "@/redux/features/cart-slice";
 import { addItemToWishlist } from "@/redux/features/wishlist-slice";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -15,13 +15,24 @@ const SingleListItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
   const dispatch = useDispatch<AppDispatch>();
 
+  // Get quantity of this item in cart
+  const cartItem = useSelector((state: RootState) => 
+    state.cartReducer.items.find(cartItem => cartItem.id === item.id)
+  );
+  const quantityInCart = cartItem?.quantity || 0;
+
   // update the QuickView state
-  const handleQuickViewUpdate = () => {
+  const handleQuickViewUpdate = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     dispatch(updateQuickView({ ...item }));
+    openModal();
   };
 
   // add to cart
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     dispatch(
       addItemToCart({
         ...item,
@@ -30,7 +41,9 @@ const SingleListItem = ({ item }: { item: Product }) => {
     );
   };
 
-  const handleItemToWishList = () => {
+  const handleItemToWishList = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     dispatch(
       addItemToWishlist({
         ...item,
@@ -41,17 +54,42 @@ const SingleListItem = ({ item }: { item: Product }) => {
   };
 
   return (
-    <div className="group rounded-lg bg-white shadow-1">
-      <div className="flex">
+    <Link href="/shop-details" className="group block rounded-lg bg-white shadow-1">
+      <div className="flex relative">
+        {/* Floating Add to Cart Button */}
+        <button
+          onClick={handleAddToCart}
+          className={`absolute top-3 right-3 z-10 flex items-center justify-center w-9 h-9 rounded-full shadow-lg ease-out duration-200 hover:scale-110 ${
+            quantityInCart > 0 
+              ? 'bg-blue text-white hover:bg-blue-dark' 
+              : 'bg-white text-dark hover:bg-gray-50'
+          }`}
+        >
+          {quantityInCart > 0 ? (
+            <span className="font-semibold text-sm">{quantityInCart}</span>
+          ) : (
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          )}
+        </button>
+
         <div className="shadow-list relative overflow-hidden flex items-center justify-center max-w-[270px] w-full sm:min-h-[270px] p-4">
-          <Image src={item.imgs.previews[0]} alt="" width={250} height={250} />
+          <Image src={item.imgs.previews[0]} alt={item.title} width={250} height={250} />
 
           <div className="absolute left-0 bottom-0 translate-y-full w-full flex items-center justify-center gap-2.5 pb-5 ease-linear duration-200 group-hover:translate-y-0">
             <button
-              onClick={() => {
-                openModal();
-                handleQuickViewUpdate();
-              }}
+              onClick={handleQuickViewUpdate}
               aria-label="button for quick view"
               className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-dark bg-white hover:text-blue"
             >
@@ -79,14 +117,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
             </button>
 
             <button
-              onClick={() => handleAddToCart()}
-              className="inline-flex font-medium text-custom-sm py-[7px] px-5 rounded-[5px] bg-blue text-white ease-out duration-200 hover:bg-blue-dark"
-            >
-              Add to cart
-            </button>
-
-            <button
-              onClick={() => handleItemToWishList()}
+              onClick={handleItemToWishList}
               aria-label="button for favorite select"
               className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-dark bg-white hover:text-blue"
             >
@@ -111,8 +142,8 @@ const SingleListItem = ({ item }: { item: Product }) => {
 
         <div className="w-full flex flex-col gap-5 sm:flex-row sm:items-center justify-center sm:justify-between py-5 px-4 sm:px-7.5 lg:pl-11 lg:pr-12">
           <div>
-            <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5">
-              <Link href="/shop-details"> {item.title} </Link>
+            <h3 className="font-medium text-dark ease-out duration-200 group-hover:text-blue mb-1.5">
+              {item.title}
             </h3>
 
             <span className="flex items-center gap-2 font-medium text-lg">
@@ -159,7 +190,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
