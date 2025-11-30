@@ -4,11 +4,11 @@
  */
 
 import {
-    addToCart as dbAddToCart,
-    clearCart as dbClearCart,
-    removeFromCart as dbRemoveFromCart,
-    updateCartItemQuantity as dbUpdateQuantity,
-    getCartItems
+  addToCart as dbAddToCart,
+  clearCart as dbClearCart,
+  removeFromCart as dbRemoveFromCart,
+  updateCartItemQuantity as dbUpdateQuantity,
+  getCartItems
 } from '@/lib/supabase/cart-queries';
 import { loadCartFromDB, setSyncing } from '@/redux/features/cart-slice';
 import { AppDispatch } from '@/redux/store';
@@ -19,14 +19,14 @@ import { AppDispatch } from '@/redux/store';
 export async function loadCartFromDatabase(dispatch: AppDispatch) {
   try {
     dispatch(setSyncing(true));
-    
+
     const dbCartItems = await getCartItems();
-    
+
     // Map database cart items to Redux cart format
     const cartItems = dbCartItems.map((item) => {
       const product = item.store_product;
       const price = product.online_price || product.list_price || 0;
-      
+
       return {
         id: parseInt(item.store_product_id.substring(0, 8), 16) % 1000000,
         dbId: item.store_product_id,
@@ -40,7 +40,7 @@ export async function loadCartFromDatabase(dispatch: AppDispatch) {
         },
       };
     });
-    
+
     dispatch(loadCartFromDB(cartItems));
     console.log('[Cart Sync] Loaded', cartItems.length, 'items from database');
   } catch (error) {

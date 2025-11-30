@@ -53,7 +53,7 @@ export default function RootLayout({
                       <PreviewSliderProvider>
                         <PermanentCartSidebar />
                         <Header />
-                        <div className="pr-[100px]">
+                        <div className="pr-[200px]">
                           {children}
                         </div>
                         <Footer />

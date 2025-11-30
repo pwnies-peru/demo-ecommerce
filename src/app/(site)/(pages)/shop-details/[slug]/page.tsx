@@ -18,7 +18,7 @@ interface ShopDetailsPageProps {
 
 export default async function ShopDetailsPage({ params }: ShopDetailsPageProps) {
   const { slug } = await params;
-  
+
   return (
     <main>
       <ShopDetails productSlug={slug} />

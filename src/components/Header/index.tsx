@@ -42,7 +42,7 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed left-0 top-0 w-full z-9999 bg-yellow transition-all ease-in-out duration-300 pr-[100px] ${
+      className={`fixed left-0 top-0 w-full z-9999 bg-yellow transition-all ease-in-out duration-300 pr-[220px] ${
         stickyMenu && "shadow"
       }`}
     >

@@ -3,8 +3,8 @@
  * Use these ONLY in Server Components, Server Actions, and Route Handlers
  */
 
-import { createClient } from '@/lib/supabase/server'
 import { DEMO_STORE_ID } from '@/lib/constants/store'
+import { createClient } from '@/lib/supabase/server'
 
 // Types based on the actual database schema
 export interface StoreCategory {
@@ -57,7 +57,7 @@ export async function getStoreCategories(storeId: string = DEMO_STORE_ID) {
     .select('*')
     .eq('store_id', storeId)
     .order('name', { ascending: true })
-  
+
   if (error) throw error
   return data as StoreCategory[]
 }
@@ -70,7 +70,7 @@ export async function getStoreProducts(storeId: string = DEMO_STORE_ID) {
     .select('*')
     .eq('store_id', storeId)
     .order('created_at', { ascending: false })
-  
+
   if (error) throw error
   return data as StoreProduct[]
 }
@@ -86,7 +86,7 @@ export async function getStoreProductsByCategory(categoryId: string, storeId: st
     .eq('store_id', storeId)
     .eq('store_product_category.store_category_id', categoryId)
     .order('created_at', { ascending: false })
-  
+
   if (error) throw error
   return data as StoreProduct[]
 }
@@ -98,7 +98,7 @@ export async function getAllBrands() {
     .from('brand')
     .select('*')
     .order('name', { ascending: true })
-  
+
   if (error) throw error
   return data as Brand[]
 }

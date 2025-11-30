@@ -34,7 +34,7 @@ export interface CartItemWithProduct extends CartItemDB {
  */
 export async function getCartItems(userId: string = DEMO_USER_ID) {
   const supabase = createClient();
-  
+
   const { data, error } = await supabase
     .from('shopping_cart_item')
     .select(`
@@ -51,12 +51,12 @@ export async function getCartItems(userId: string = DEMO_USER_ID) {
     `)
     .eq('user_id', userId)
     .order('created_at', { ascending: false });
-  
+
   if (error) {
     console.error('Error fetching cart items:', error);
     throw error;
   }
-  
+
   return data as CartItemWithProduct[];
 }
 
@@ -71,7 +71,7 @@ export async function addToCart(
   storeId: string = DEMO_STORE_ID
 ) {
   const supabase = createClient();
-  
+
   // Use database function for atomic upsert
   const { data, error } = await supabase
     .rpc('upsert_cart_item', {
@@ -80,19 +80,19 @@ export async function addToCart(
       p_store_product_id: productId,
       p_quantity_to_add: quantity,
     });
-  
+
   if (error) {
     console.error('Error adding to cart:', error);
     throw error;
   }
-  
+
   // RPC returns an array, get the first item and map column names
   const rawData = Array.isArray(data) ? data[0] : data;
-  
+
   if (!rawData) {
     throw new Error('No data returned from upsert_cart_item');
   }
-  
+
   // Map the returned column names to our interface
   return {
     id: rawData.cart_id,
@@ -115,7 +115,7 @@ export async function updateCartItemQuantity(
   userId: string = DEMO_USER_ID
 ) {
   const supabase = createClient();
-  
+
   // Use database function for atomic update/delete
   const { error } = await supabase
     .rpc('set_cart_item_quantity', {
@@ -123,12 +123,12 @@ export async function updateCartItemQuantity(
       p_store_product_id: productId,
       p_quantity: quantity,
     });
-  
+
   if (error) {
     console.error('Error updating cart quantity:', error);
     throw error;
   }
-  
+
   // Return a success indicator
   return {
     id: '',
@@ -149,18 +149,18 @@ export async function removeFromCart(
   userId: string = DEMO_USER_ID
 ) {
   const supabase = createClient();
-  
+
   const { error } = await supabase
     .from('shopping_cart_item')
     .delete()
     .eq('user_id', userId)
     .eq('store_product_id', productId);
-  
+
   if (error) {
     console.error('Error removing from cart:', error);
     throw error;
   }
-  
+
   return true;
 }
 
@@ -169,17 +169,17 @@ export async function removeFromCart(
  */
 export async function clearCart(userId: string = DEMO_USER_ID) {
   const supabase = createClient();
-  
+
   const { error } = await supabase
     .from('shopping_cart_item')
     .delete()
     .eq('user_id', userId);
-  
+
   if (error) {
     console.error('Error clearing cart:', error);
     throw error;
   }
-  
+
   return true;
 }
 
