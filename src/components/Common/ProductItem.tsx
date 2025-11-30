@@ -201,7 +201,7 @@ const ProductItem = ({ item }: { item: Product }) => {
       </h3>
 
       <span className="flex items-center gap-2 font-medium text-lg">
-        <span className="text-dark">${item.price}</span>
+        <span className="text-dark">S/ {item.price}</span>
       </span>
     </Link>
   );

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import Image from "next/image";
+import { useState } from "react";
 
 const ShippingMethod = () => {
   const [shippingMethod, setShippingMethod] = useState("free");
@@ -68,7 +68,7 @@ const ShippingMethod = () => {
                 </div>
 
                 <div className="border-l border-gray-4 pl-4">
-                  <p className="font-semibold text-dark">$10.99</p>
+                  <p className="font-semibold text-dark">S/ 10.99</p>
                   <p className="text-custom-xs">Standard Shipping</p>
                 </div>
               </div>
@@ -108,7 +108,7 @@ const ShippingMethod = () => {
                 </div>
 
                 <div className="border-l border-gray-4 pl-4">
-                  <p className="font-semibold text-dark">$12.50</p>
+                  <p className="font-semibold text-dark">S/ 12.50</p>
                   <p className="text-custom-xs">Standard Shipping</p>
                 </div>
               </div>

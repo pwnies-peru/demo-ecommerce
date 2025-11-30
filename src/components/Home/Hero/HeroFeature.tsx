@@ -4,7 +4,7 @@ const featureData = [
   {
     img: "/images/icons/icon-01.svg",
     title: "Envío Gratis",
-    description: "Para todos los pedidos $200",
+    description: "Para todos los pedidos S/ 200",
   },
   {
     img: "/images/icons/icon-02.svg",

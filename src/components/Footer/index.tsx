@@ -264,7 +264,7 @@ const Footer = () => {
             </h2>
 
             <p className="lg:text-right text-custom-sm mb-4">
-              Ahorra $3 con la App y solo usuarios nuevos
+              Ahorra S/ 3 con la App y solo usuarios nuevos
             </p>
 
             <ul className="flex flex-col lg:items-end gap-3">

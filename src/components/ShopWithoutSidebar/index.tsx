@@ -6,6 +6,7 @@ import SingleGridItem from "../Shop/SingleGridItem";
 import SingleListItem from "../Shop/SingleListItem";
 import CustomSelect from "../ShopWithSidebar/CustomSelect";
 
+import { useProducts } from "@/app/context/ProductsContext";
 import { getStoreProducts } from "@/lib/supabase/queries-client";
 import { mapStoreProductsToProducts } from "@/lib/utils/product-mapper";
 import { Product } from "@/types/product";
@@ -20,6 +21,8 @@ const ShopWithoutSidebar = () => {
   const [sortBy, setSortBy] = useState("0");
   const [totalProducts, setTotalProducts] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+
+  const { setProducts: setGlobalProducts } = useProducts();
 
   const options = [
     { label: "Productos Recientes", value: "0" },
@@ -38,6 +41,7 @@ const ShopWithoutSidebar = () => {
         });
         const mappedProducts = mapStoreProductsToProducts(dbProducts);
         setProducts(mappedProducts);
+        setGlobalProducts(mappedProducts); // Share with global context
         setTotalProducts(total);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -49,7 +53,7 @@ const ShopWithoutSidebar = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [setGlobalProducts]);
 
   const loadMoreProducts = async () => {
     try {
@@ -63,7 +67,9 @@ const ShopWithoutSidebar = () => {
       });
 
       const mappedProducts = mapStoreProductsToProducts(dbProducts);
-      setProducts(prev => [...prev, ...mappedProducts]);
+      const allProducts = [...products, ...mappedProducts];
+      setProducts(allProducts);
+      setGlobalProducts(allProducts); // Share with global context
       setCurrentPage(nextPage);
     } catch (error) {
       console.error("Error loading more products:", error);

@@ -12,11 +12,11 @@ export function MagicGlow({ isActive }: { isActive: boolean }) {
             background-size: 0% 0%;
           }
           20% {
-            opacity: 0.8;
+            opacity: 0.4;
             background-size: 50% 50%;
           }
           50% {
-            opacity: 0.6;
+            opacity: 0.3;
             background-size: 150% 150%;
           }
           100% {
@@ -39,10 +39,10 @@ export function MagicGlow({ isActive }: { isActive: boolean }) {
             filter: hue-rotate(0deg);
           }
           33% {
-            filter: hue-rotate(20deg);
+            filter: hue-rotate(10deg);
           }
           66% {
-            filter: hue-rotate(-20deg);
+            filter: hue-rotate(-10deg);
           }
           100% {
             filter: hue-rotate(0deg);
@@ -67,7 +67,7 @@ export function MagicGlow({ isActive }: { isActive: boolean }) {
           inset: 0;
           pointer-events: none;
           z-index: 999999;
-          animation: colorShift 3s ease-in-out forwards;
+          animation: colorShift 1.5s ease-in-out forwards;
         }
 
         .magic-radial-glow {
@@ -75,59 +75,59 @@ export function MagicGlow({ isActive }: { isActive: boolean }) {
           inset: 0;
           background: radial-gradient(
             circle at 0% 100%,
-            rgba(59, 130, 246, 0.7) 0%,
-            rgba(147, 51, 234, 0.6) 15%,
-            rgba(236, 72, 153, 0.5) 30%,
-            rgba(59, 130, 246, 0.4) 45%,
+            rgba(59, 130, 246, 0.35) 0%,
+            rgba(147, 51, 234, 0.3) 15%,
+            rgba(236, 72, 153, 0.25) 30%,
+            rgba(59, 130, 246, 0.2) 45%,
             transparent 60%
           );
           background-position: 0% 100%;
           background-repeat: no-repeat;
           background-size: 0% 0%;
-          animation: magicPulse 3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+          animation: magicPulse 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
         .magic-grain {
           position: absolute;
           inset: 0;
-          background-image: 
-            radial-gradient(circle at 0% 100%, rgba(59, 130, 246, 0.4) 0%, transparent 40%),
-            radial-gradient(circle at 5% 95%, rgba(147, 51, 234, 0.4) 0%, transparent 40%),
-            radial-gradient(circle at 10% 90%, rgba(236, 72, 153, 0.4) 0%, transparent 40%),
-            radial-gradient(circle at 3% 97%, rgba(59, 130, 246, 0.3) 0%, transparent 40%);
+          background-image:
+            radial-gradient(circle at 0% 100%, rgba(59, 130, 246, 0.2) 0%, transparent 40%),
+            radial-gradient(circle at 5% 95%, rgba(147, 51, 234, 0.2) 0%, transparent 40%),
+            radial-gradient(circle at 10% 90%, rgba(236, 72, 153, 0.2) 0%, transparent 40%),
+            radial-gradient(circle at 3% 97%, rgba(59, 130, 246, 0.15) 0%, transparent 40%);
           background-position: 0% 100%;
           background-repeat: no-repeat;
           background-size: 0% 0%;
           filter: blur(40px);
-          animation: magicPulse 3s cubic-bezier(0.22, 1, 0.36, 1) forwards, shimmer 2s ease-in-out;
+          animation: magicPulse 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards, shimmer 1.5s ease-in-out;
         }
 
         .magic-border-glow {
           position: absolute;
           inset: 0;
-          box-shadow: 
-            inset 0 0 80px rgba(59, 130, 246, 0.5),
-            inset 0 0 40px rgba(147, 51, 234, 0.4),
-            inset 0 0 20px rgba(236, 72, 153, 0.3);
-          animation: magicPulse 3s ease-out forwards;
+          box-shadow:
+            inset 0 0 80px rgba(59, 130, 246, 0.25),
+            inset 0 0 40px rgba(147, 51, 234, 0.2),
+            inset 0 0 20px rgba(236, 72, 153, 0.15);
+          animation: magicPulse 1.5s ease-out forwards;
         }
 
         .magic-particles {
           position: absolute;
           inset: 0;
-          background: 
-            radial-gradient(2px 2px at 20% 30%, white, transparent),
-            radial-gradient(2px 2px at 60% 70%, white, transparent),
-            radial-gradient(2px 2px at 80% 10%, white, transparent),
-            radial-gradient(1px 1px at 40% 60%, white, transparent),
-            radial-gradient(1px 1px at 90% 90%, white, transparent),
-            radial-gradient(2px 2px at 10% 80%, white, transparent),
-            radial-gradient(1px 1px at 70% 40%, white, transparent);
+          background:
+            radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.6), transparent),
+            radial-gradient(2px 2px at 60% 70%, rgba(255, 255, 255, 0.6), transparent),
+            radial-gradient(2px 2px at 80% 10%, rgba(255, 255, 255, 0.6), transparent),
+            radial-gradient(1px 1px at 40% 60%, rgba(255, 255, 255, 0.5), transparent),
+            radial-gradient(1px 1px at 90% 90%, rgba(255, 255, 255, 0.5), transparent),
+            radial-gradient(2px 2px at 10% 80%, rgba(255, 255, 255, 0.6), transparent),
+            radial-gradient(1px 1px at 70% 40%, rgba(255, 255, 255, 0.5), transparent);
           background-size: 200% 200%;
-          animation: shimmer 2s ease-in-out;
+          animation: shimmer 1.5s ease-in-out;
         }
       `}</style>
-      
+
       <div className="magic-glow-container">
         <div className="magic-radial-glow" />
         <div className="magic-grain" />

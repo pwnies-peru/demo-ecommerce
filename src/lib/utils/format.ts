@@ -3,7 +3,7 @@
  */
 
 /**
- * Format a number as currency (USD)
+ * Format a number as currency (PEN - Peruvian Soles)
  * Handles floating-point precision errors
  */
 export function formatCurrency(amount: number): string {
@@ -15,8 +15,8 @@ export function formatCurrency(amount: number): string {
 /**
  * Format a number as currency with symbol
  */
-export function formatPrice(amount: number, symbol: string = '$'): string {
-  return `${symbol}${formatCurrency(amount)}`;
+export function formatPrice(amount: number, symbol: string = 'S/'): string {
+  return `${symbol} ${formatCurrency(amount)}`;
 }
 
 /**

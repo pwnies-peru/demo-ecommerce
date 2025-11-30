@@ -17,12 +17,25 @@ type CartItem = {
     thumbnails: string[];
     previews: string[];
   };
+  isNegotiated?: boolean; // Flag for negotiated items
+  negotiatedDiscount?: number; // Discount percentage from negotiation
 };
 
 const initialState: InitialState = {
   items: [],
   syncing: false,
 };
+
+// Helper to load negotiated items from localStorage
+function loadNegotiatedItems(): CartItem[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const stored = localStorage.getItem('negotiatedItems');
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
 
 export const cart = createSlice({
   name: "cart",
@@ -81,8 +94,22 @@ export const cart = createSlice({
 
 export const selectCartItems = (state: RootState) => state.cartReducer.items;
 
+// Select regular (non-negotiated) items
+export const selectRegularItems = createSelector([selectCartItems], (items) => {
+  return items.filter(item => !item.isNegotiated);
+});
+
+// Select negotiated items from localStorage
+export const selectNegotiatedItems = () => {
+  return loadNegotiatedItems();
+};
+
 export const selectTotalPrice = createSelector([selectCartItems], (items) => {
-  const total = items.reduce((total, item) => {
+  // Add negotiated items from localStorage
+  const negotiatedItems = loadNegotiatedItems();
+  const allItems = [...items, ...negotiatedItems];
+
+  const total = allItems.reduce((total, item) => {
     return total + item.discountedPrice * item.quantity;
   }, 0);
   // Round to 2 decimal places to avoid floating-point errors

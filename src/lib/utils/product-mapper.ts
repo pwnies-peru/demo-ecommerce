@@ -28,7 +28,7 @@ function generateSlug(name: string, id: string): string {
     .replace(/\s+/g, '-') // Replace spaces with hyphens
     .replace(/-+/g, '-') // Replace multiple hyphens with single
     .trim();
-  
+
   // Add a short ID suffix to ensure uniqueness
   const shortId = id.substring(0, 8);
   return `${baseSlug}-${shortId}`;
@@ -40,21 +40,21 @@ function generateSlug(name: string, id: string): string {
  */
 export function mapStoreProductToProduct(dbProduct: StoreProductDB): Product {
   const dummyData = generateDummyData(dbProduct.id);
-  
+
   // Use online_price as the main price, NO DISCOUNTS
   const price = dbProduct.online_price || dbProduct.list_price || 0;
-  
+
   // ALWAYS use database slug if it exists, otherwise generate one
   // Database slugs take priority to ensure URL consistency
   const slug = dbProduct.slug || generateSlug(dbProduct.name || 'producto', dbProduct.id);
-  
+
   console.log('[Product Mapper]', {
     dbProductId: dbProduct.id,
     dbSlug: dbProduct.slug,
     finalSlug: slug,
     name: dbProduct.name
   });
-  
+
   return {
     id: parseInt(dbProduct.id_engine || dbProduct.id.substring(0, 8), 16) % 1000000,
     dbId: dbProduct.id, // Store original database UUID

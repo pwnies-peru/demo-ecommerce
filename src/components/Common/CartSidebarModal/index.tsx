@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
 import {
@@ -7,10 +7,10 @@ import {
   selectTotalPrice,
 } from "@/redux/features/cart-slice";
 import { useAppSelector } from "@/redux/store";
-import { useSelector } from "react-redux";
-import SingleItem from "./SingleItem";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 import EmptyCart from "./EmptyCart";
+import SingleItem from "./SingleItem";
 
 const CartSidebarModal = () => {
   const { isCartModalOpen, closeCartModal } = useCartModalContext();
@@ -97,7 +97,7 @@ const CartSidebarModal = () => {
             <div className="flex items-center justify-between gap-5 mb-6">
               <p className="font-medium text-xl text-dark">Subtotal:</p>
 
-              <p className="font-medium text-xl text-dark">${totalPrice.toFixed(2)}</p>
+              <p className="font-medium text-xl text-dark">S/ {totalPrice.toFixed(2)}</p>
             </div>
 
             <div className="flex items-center gap-4">

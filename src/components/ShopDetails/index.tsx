@@ -394,7 +394,7 @@ const ShopDetails = ({ productSlug }: { productSlug: string }) => {
 
                   <h3 className="font-medium text-custom-1 mb-4.5">
                     <span className="text-sm sm:text-base text-dark">
-                      Precio: ${product.price}
+                      Precio: S/ {product.price}
                     </span>
                   </h3>
 

@@ -1,11 +1,34 @@
 import { selectTotalPrice } from "@/redux/features/cart-slice";
 import { useAppSelector } from "@/redux/store";
-import React from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-const OrderSummary = () => {
+interface OrderSummaryProps {
+  appliedCoupon?: string | null;
+}
+
+const OrderSummary = ({ appliedCoupon }: OrderSummaryProps) => {
   const cartItems = useAppSelector((state) => state.cartReducer.items);
   const totalPrice = useSelector(selectTotalPrice);
+  const [negotiatedItems, setNegotiatedItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    const loadNegotiated = () => {
+      try {
+        const stored = localStorage.getItem('negotiatedItems');
+        setNegotiatedItems(stored ? JSON.parse(stored) : []);
+      } catch {
+        setNegotiatedItems([]);
+      }
+    };
+
+    loadNegotiated();
+    window.addEventListener('storage', loadNegotiated);
+    return () => window.removeEventListener('storage', loadNegotiated);
+  }, []);
+
+  const couponDiscount = appliedCoupon ? 15.00 : 0;
+  const finalTotal = Math.max(0, totalPrice - couponDiscount);
 
   return (
     <div className="lg:max-w-[455px] w-full">
@@ -34,20 +57,66 @@ const OrderSummary = () => {
               </div>
               <div>
                 <p className="text-dark text-right">
-                  ${(item.discountedPrice * item.quantity).toFixed(2)}
+                  S/ {(item.discountedPrice * item.quantity).toFixed(2)}
                 </p>
               </div>
             </div>
           ))}
 
+          {negotiatedItems.map((item, key) => (
+            <div key={`neg-${key}`} className="flex items-center justify-between py-5 border-b border-gray-3 bg-yellow-50/50">
+              <div>
+                <p className="text-yellow-700 font-medium">🎁 {item.title}</p>
+              </div>
+              <div>
+                <p className="text-yellow-700 font-medium text-right">
+                  S/ {(item.discountedPrice * item.quantity).toFixed(2)}
+                </p>
+              </div>
+            </div>
+          ))}
+
+          {/* <!-- subtotal --> */}
+          <div className="flex items-center justify-between pt-5 border-b border-gray-3 pb-5">
+            <div>
+              <p className="text-dark">Subtotal</p>
+            </div>
+            <div>
+              <p className="text-dark text-right">
+                S/ {totalPrice.toFixed(2)}
+              </p>
+            </div>
+          </div>
+
+          {/* <!-- coupon discount --> */}
+          {appliedCoupon && (
+            <div className="flex items-center justify-between py-5 border-b border-gray-3 bg-green-50 relative overflow-hidden animate-[slideIn_0.5s_ease-out]">
+              <div className="absolute top-1 left-2 text-sm animate-pulse">✨</div>
+              <div className="absolute top-1 right-2 text-sm animate-pulse delay-300">💫</div>
+              <div>
+                <p className="text-green-700 font-medium flex items-center gap-2">
+                  <span className="animate-bounce">🎟️</span>
+                  Cupón "{appliedCoupon}"
+                  <span className="animate-pulse">✨</span>
+                </p>
+              </div>
+              <div>
+                <p className="text-green-700 font-bold text-right flex items-center gap-1">
+                  <span className="animate-pulse">💰</span>
+                  - S/ {couponDiscount.toFixed(2)}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* <!-- total --> */}
           <div className="flex items-center justify-between pt-5">
             <div>
-              <p className="font-medium text-lg text-dark">Total</p>
+              <p className="font-medium text-xl text-dark">Total</p>
             </div>
             <div>
-              <p className="font-medium text-lg text-dark text-right">
-                ${totalPrice.toFixed(2)}
+              <p className="font-medium text-xl text-dark text-right">
+                S/ {finalTotal.toFixed(2)}
               </p>
             </div>
           </div>

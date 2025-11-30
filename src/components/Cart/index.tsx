@@ -1,13 +1,64 @@
 "use client";
+import { selectRegularItems } from "@/redux/features/cart-slice";
 import { useAppSelector } from "@/redux/store";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { CartCouponOffer } from "../AI/CartCouponOffer";
 import Breadcrumb from "../Common/Breadcrumb";
 import Discount from "./Discount";
 import OrderSummary from "./OrderSummary";
 import SingleItem from "./SingleItem";
 
 const Cart = () => {
-  const cartItems = useAppSelector((state) => state.cartReducer.items);
+  const regularItems = useAppSelector(selectRegularItems);
+  const [negotiatedItems, setNegotiatedItems] = useState<any[]>([]);
+  const [showCouponOffer, setShowCouponOffer] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadNegotiated = () => {
+      try {
+        const stored = localStorage.getItem('negotiatedItems');
+        setNegotiatedItems(stored ? JSON.parse(stored) : []);
+      } catch {
+        setNegotiatedItems([]);
+      }
+    };
+
+    loadNegotiated();
+    window.addEventListener('storage', loadNegotiated);
+    return () => window.removeEventListener('storage', loadNegotiated);
+  }, []);
+
+  // Clear coupon data on mount (page refresh)
+  useEffect(() => {
+    // Clear session storage on page load/refresh
+    sessionStorage.removeItem('showCartCoupon');
+    sessionStorage.removeItem('cartCouponCode');
+    
+    const checkCouponOffer = () => {
+      const show = sessionStorage.getItem('showCartCoupon');
+      const code = sessionStorage.getItem('cartCouponCode');
+      if (show === 'true' && code) {
+        setShowCouponOffer(true);
+        setCouponCode(code);
+      }
+    };
+
+    // Check after clearing (in case 'h' is pressed after mount)
+    const interval = setInterval(checkCouponOffer, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleApplyCoupon = (code: string) => {
+    setAppliedCoupon(code);
+  };
+
+  const handleCouponCopy = () => {
+    // Auto-apply the coupon when copied
+    setAppliedCoupon(couponCode);
+  };
 
   return (
     <>
@@ -16,7 +67,7 @@ const Cart = () => {
         <Breadcrumb title={"Cart"} pages={["Cart"]} />
       </section>
       {/* <!-- ===== Breadcrumb Section End ===== --> */}
-      {cartItems.length > 0 ? (
+      {regularItems.length > 0 || negotiatedItems.length > 0 ? (
         <section className="overflow-hidden py-20 bg-gray-2">
           <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
             <div className="flex flex-wrap items-center justify-between gap-5 mb-7.5">
@@ -24,44 +75,113 @@ const Cart = () => {
               <button className="text-blue">Vaciar Carrito de Compras</button>
             </div>
 
-            <div className="bg-white rounded-[10px] shadow-1">
-              <div className="w-full overflow-x-auto">
-                <div className="min-w-[1170px]">
-                  {/* <!-- table header --> */}
-                  <div className="flex items-center py-5.5 px-7.5">
-                    <div className="min-w-[400px]">
-                      <p className="text-dark">Producto</p>
+            {/* Regular Items */}
+            {regularItems.length > 0 && (
+              <div className="bg-white rounded-[10px] mb-7.5">
+                <div className="w-full overflow-x-auto">
+                  <div className="min-w-[1170px]">
+                    {/* <!-- table header --> */}
+                    <div className="flex items-center py-5.5 px-7.5">
+                      <div className="min-w-[400px]">
+                        <p className="text-dark">Producto</p>
+                      </div>
+
+                      <div className="min-w-[180px]">
+                        <p className="text-dark">Precio</p>
+                      </div>
+
+                      <div className="min-w-[275px]">
+                        <p className="text-dark">Cantidad</p>
+                      </div>
+
+                      <div className="min-w-[200px]">
+                        <p className="text-dark">Subtotal</p>
+                      </div>
+
+                      <div className="min-w-[50px]">
+                        <p className="text-dark text-right">Acción</p>
+                      </div>
                     </div>
 
-                    <div className="min-w-[180px]">
-                      <p className="text-dark">Precio</p>
-                    </div>
-
-                    <div className="min-w-[275px]">
-                      <p className="text-dark">Cantidad</p>
-                    </div>
-
-                    <div className="min-w-[200px]">
-                      <p className="text-dark">Subtotal</p>
-                    </div>
-
-                    <div className="min-w-[50px]">
-                      <p className="text-dark text-right">Acción</p>
-                    </div>
-                  </div>
-
-                  {/* <!-- cart item --> */}
-                  {cartItems.length > 0 &&
-                    cartItems.map((item, key) => (
-                      <SingleItem item={item} key={key} />
+                    {/* <!-- cart item --> */}
+                    {regularItems.map((item, key) => (
+                      <SingleItem item={item} key={key} isNegotiated={false} />
                     ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* Negotiated Items Section */}
+            {negotiatedItems.length > 0 && (
+              <div className="bg-gradient-to-br from-yellow-50 via-white to-yellow-50 rounded-[10px] mb-7.5 relative overflow-hidden">
+                {/* Magical sparkle background */}
+                <div className="absolute inset-0 opacity-30">
+                  <div className="absolute top-4 left-4 text-yellow-400 text-2xl animate-pulse">✨</div>
+                  <div className="absolute top-8 right-8 text-yellow-400 text-xl animate-pulse delay-100">✨</div>
+                  <div className="absolute bottom-4 left-1/4 text-yellow-400 text-lg animate-pulse delay-200">✨</div>
+                  <div className="absolute bottom-8 right-1/3 text-yellow-400 text-xl animate-pulse delay-300">✨</div>
+                </div>
+
+                <div className="px-7.5 py-4 border-b border-gray-3 bg-gradient-to-r from-yellow-100 to-yellow-50 relative">
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl">🎁</span>
+                    <div>
+                      <h3 className="font-bold text-yellow-700 text-xl">Ofertas Especiales Negociadas</h3>
+                      <p className="text-sm text-yellow-600">Productos exclusivos obtenidos mediante negociación</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full overflow-x-auto">
+                  <div className="min-w-[1170px]">
+                    {/* <!-- table header --> */}
+                    <div className="flex items-center py-5.5 px-7.5 bg-yellow-50/50">
+                      <div className="min-w-[400px]">
+                        <p className="text-yellow-700 font-medium">Producto</p>
+                      </div>
+
+                      <div className="min-w-[180px]">
+                        <p className="text-yellow-700 font-medium">Precio Negociado</p>
+                      </div>
+
+                      <div className="min-w-[275px]">
+                        <p className="text-yellow-700 font-medium">Cantidad</p>
+                      </div>
+
+                      <div className="min-w-[200px]">
+                        <p className="text-yellow-700 font-medium">Subtotal</p>
+                      </div>
+
+                      <div className="min-w-[50px]">
+                        <p className="text-yellow-700 font-medium text-right">Acción</p>
+                      </div>
+                    </div>
+
+                    {/* <!-- cart item --> */}
+                    {negotiatedItems.map((item, key) => (
+                      <SingleItem item={item} key={key} isNegotiated={true} />
+                    ))}
+                  </div>
+                </div>
+
+                <style jsx>{`
+                  .delay-100 { animation-delay: 0.1s; }
+                  .delay-200 { animation-delay: 0.2s; }
+                  .delay-300 { animation-delay: 0.3s; }
+                `}</style>
+              </div>
+            )}
+
+            {/* Cart Coupon Offer */}
+            <CartCouponOffer 
+              isActive={showCouponOffer} 
+              couponCode={couponCode}
+              onCopy={handleCouponCopy}
+            />
 
             <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-11 mt-9">
-              <Discount />
-              <OrderSummary />
+              <Discount onApplyCoupon={handleApplyCoupon} appliedCoupon={appliedCoupon} />
+              <OrderSummary appliedCoupon={appliedCoupon} />
             </div>
           </div>
         </section>

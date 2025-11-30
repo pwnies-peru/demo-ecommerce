@@ -64,7 +64,7 @@ export async function getStoreCategories(storeId: string = DEMO_STORE_ID) {
 
 // Store Products
 export async function getStoreProducts(
-  storeId: string = DEMO_STORE_ID, 
+  storeId: string = DEMO_STORE_ID,
   options?: { limit?: number; offset?: number }
 ) {
   const supabase = createClient()
@@ -73,17 +73,17 @@ export async function getStoreProducts(
     .select('*', { count: 'exact' })
     .eq('store_id', storeId)
     .order('created_at', { ascending: false })
-  
+
   if (options?.limit) {
     query = query.limit(options.limit)
   }
-  
+
   if (options?.offset) {
     query = query.range(options.offset, options.offset + (options.limit || 40) - 1)
   }
-  
+
   const { data, error, count } = await query
-  
+
   if (error) throw error
   return { products: data as StoreProduct[], total: count || 0 }
 }
@@ -96,7 +96,7 @@ export async function getStoreProductById(productId: string, storeId: string = D
     .eq('id', productId)
     .eq('store_id', storeId)
     .single()
-  
+
   if (error) throw error
   return data as StoreProduct
 }
@@ -109,7 +109,7 @@ export async function getStoreProductBySlug(slug: string, storeId: string = DEMO
     .eq('slug', slug)
     .eq('store_id', storeId)
     .single()
-  
+
   if (error) throw error
   return data as StoreProduct
 }
