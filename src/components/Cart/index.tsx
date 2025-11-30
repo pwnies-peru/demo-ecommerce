@@ -1,11 +1,10 @@
 "use client";
-import React from "react";
+import { useAppSelector } from "@/redux/store";
+import Link from "next/link";
+import Breadcrumb from "../Common/Breadcrumb";
 import Discount from "./Discount";
 import OrderSummary from "./OrderSummary";
-import { useAppSelector } from "@/redux/store";
 import SingleItem from "./SingleItem";
-import Breadcrumb from "../Common/Breadcrumb";
-import Link from "next/link";
 
 const Cart = () => {
   const cartItems = useAppSelector((state) => state.cartReducer.items);
@@ -103,7 +102,7 @@ const Cart = () => {
             <p className="pb-6">¡Tu carrito está vacío!</p>
 
             <Link
-              href="/shop-with-sidebar"
+              href="/shop-without-sidebar"
               className="w-96 mx-auto flex justify-center font-medium text-white bg-dark py-[13px] px-6 rounded-md ease-out duration-200 hover:bg-opacity-95"
             >
               Continuar Comprando

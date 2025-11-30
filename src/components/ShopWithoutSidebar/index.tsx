@@ -1,26 +1,95 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
 
 import SingleGridItem from "../Shop/SingleGridItem";
 import SingleListItem from "../Shop/SingleListItem";
 import CustomSelect from "../ShopWithSidebar/CustomSelect";
 
-import shopData from "../Shop/shopData";
+import { getStoreProducts } from "@/lib/supabase/queries-client";
+import { mapStoreProductsToProducts } from "@/lib/utils/product-mapper";
+import { Product } from "@/types/product";
+
+const PRODUCTS_PER_PAGE = 40;
 
 const ShopWithoutSidebar = () => {
   const [productStyle, setProductStyle] = useState("grid");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [sortBy, setSortBy] = useState("0");
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const options = [
-    { label: "Latest Products", value: "0" },
-    { label: "Best Selling", value: "1" },
-    { label: "Old Products", value: "2" },
+    { label: "Productos Recientes", value: "0" },
+    { label: "Mejor Valorados", value: "1" },
+    { label: "Precio: Menor a Mayor", value: "2" },
   ];
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        setCurrentPage(0);
+        const { products: dbProducts, total } = await getStoreProducts(undefined, {
+          limit: PRODUCTS_PER_PAGE,
+          offset: 0,
+        });
+        const mappedProducts = mapStoreProductsToProducts(dbProducts);
+        setProducts(mappedProducts);
+        setTotalProducts(total);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+        setTotalProducts(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const loadMoreProducts = async () => {
+    try {
+      setLoadingMore(true);
+      const nextPage = currentPage + 1;
+      const offset = nextPage * PRODUCTS_PER_PAGE;
+
+      const { products: dbProducts } = await getStoreProducts(undefined, {
+        limit: PRODUCTS_PER_PAGE,
+        offset: offset,
+      });
+
+      const mappedProducts = mapStoreProductsToProducts(dbProducts);
+      setProducts(prev => [...prev, ...mappedProducts]);
+      setCurrentPage(nextPage);
+    } catch (error) {
+      console.error("Error loading more products:", error);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  // Sort products based on selected option
+  const sortedProducts = [...products].sort((a, b) => {
+    switch (sortBy) {
+      case "1": // Best rated
+        return (b.rating || 0) - (a.rating || 0);
+      case "2": // Price: Low to High
+        return a.price - b.price;
+      default: // Recent (already sorted by created_at from DB)
+        return 0;
+    }
+  });
+
+  const hasMoreProducts = products.length < totalProducts;
 
   return (
     <>
       <Breadcrumb
-        title={"Explore All Products"}
+        title={"Explora nuestros productos"}
         pages={["shop", "/", "shop without sidebar"]}
       />
       <section className="overflow-hidden relative pb-20 pt-5 lg:pt-12 xl:pt-14 bg-[#f3f4f6]">
@@ -32,11 +101,27 @@ const ShopWithoutSidebar = () => {
                 <div className="flex items-center justify-between">
                   {/* <!-- top bar left --> */}
                   <div className="flex flex-wrap items-center gap-4">
-                    <CustomSelect options={options} />
+                    <CustomSelect
+                      options={options}
+                      onChange={(value) => setSortBy(value)}
+                    />
 
                     <p>
-                      Showing <span className="text-dark">9 of 50</span>{" "}
-                      Products
+                      {loading ? (
+                        <span className="text-dark-4">Cargando...</span>
+                      ) : (
+                        <>
+                          Mostrando{" "}
+                          <span className="text-dark">
+                            {sortedProducts.length}
+                          </span>{" "}
+                          de{" "}
+                          <span className="text-dark">
+                            {totalProducts}
+                          </span>{" "}
+                          Productos
+                        </>
+                      )}
                     </p>
                   </div>
 
@@ -121,141 +206,75 @@ const ShopWithoutSidebar = () => {
                 </div>
               </div>
 
-              {/* <!-- Products Grid Tab Content Start --> */}
-              <div
-                className={`${
-                  productStyle === "grid"
-                    ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-7.5 gap-y-9"
-                    : "flex flex-col gap-7.5"
-                }`}
-              >
-                {shopData.map((item, key) =>
-                  productStyle === "grid" ? (
-                    <SingleGridItem item={item} key={key} />
-                  ) : (
-                    <SingleListItem item={item} key={key} />
-                  )
-                )}
-              </div>
-              {/* <!-- Products Grid Tab Content End --> */}
-
-              {/* <!-- Products Pagination Start --> */}
-              <div className="flex justify-center mt-15">
-                <div className="bg-white shadow-1 rounded-md p-2">
-                  <ul className="flex items-center">
-                    <li>
-                      <button
-                        id="paginationLeft"
-                        aria-label="button for pagination left"
-                        type="button"
-                        disabled
-                        className="flex items-center justify-center w-8 h-9 ease-out duration-200 rounded-[3px disabled:text-gray-4"
-                      >
-                        <svg
-                          className="fill-current"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M12.1782 16.1156C12.0095 16.1156 11.8407 16.0594 11.7282 15.9187L5.37197 9.45C5.11885 9.19687 5.11885 8.80312 5.37197 8.55L11.7282 2.08125C11.9813 1.82812 12.3751 1.82812 12.6282 2.08125C12.8813 2.33437 12.8813 2.72812 12.6282 2.98125L6.72197 9L12.6563 15.0187C12.9095 15.2719 12.9095 15.6656 12.6563 15.9187C12.4876 16.0312 12.347 16.1156 12.1782 16.1156Z"
-                            fill=""
-                          />
-                        </svg>
-                      </button>
-                    </li>
-
-                    <li>
-                      <a
-                        href="#"
-                        className="flex py-1.5 px-3.5 duration-200 rounded-[3px] bg-blue text-white hover:text-white hover:bg-blue"
-                      >
-                        1
-                      </a>
-                    </li>
-
-                    <li>
-                      <a
-                        href="#"
-                        className="flex py-1.5 px-3.5 duration-200 rounded-[3px] hover:text-white hover:bg-blue"
-                      >
-                        2
-                      </a>
-                    </li>
-
-                    <li>
-                      <a
-                        href="#"
-                        className="flex py-1.5 px-3.5 duration-200 rounded-[3px] hover:text-white hover:bg-blue"
-                      >
-                        3
-                      </a>
-                    </li>
-
-                    <li>
-                      <a
-                        href="#"
-                        className="flex py-1.5 px-3.5 duration-200 rounded-[3px] hover:text-white hover:bg-blue"
-                      >
-                        4
-                      </a>
-                    </li>
-
-                    <li>
-                      <a
-                        href="#"
-                        className="flex py-1.5 px-3.5 duration-200 rounded-[3px] hover:text-white hover:bg-blue"
-                      >
-                        5
-                      </a>
-                    </li>
-
-                    <li>
-                      <a
-                        href="#"
-                        className="flex py-1.5 px-3.5 duration-200 rounded-[3px] hover:text-white hover:bg-blue"
-                      >
-                        ...
-                      </a>
-                    </li>
-
-                    <li>
-                      <a
-                        href="#"
-                        className="flex py-1.5 px-3.5 duration-200 rounded-[3px] hover:text-white hover:bg-blue"
-                      >
-                        10
-                      </a>
-                    </li>
-
-                    <li>
-                      <button
-                        id="paginationLeft"
-                        aria-label="button for pagination left"
-                        type="button"
-                        className="flex items-center justify-center w-8 h-9 ease-out duration-200 rounded-[3px] hover:text-white hover:bg-blue disabled:text-gray-4"
-                      >
-                        <svg
-                          className="fill-current"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M5.82197 16.1156C5.65322 16.1156 5.5126 16.0594 5.37197 15.9469C5.11885 15.6937 5.11885 15.3 5.37197 15.0469L11.2782 9L5.37197 2.98125C5.11885 2.72812 5.11885 2.33437 5.37197 2.08125C5.6251 1.82812 6.01885 1.82812 6.27197 2.08125L12.6282 8.55C12.8813 8.80312 12.8813 9.19687 12.6282 9.45L6.27197 15.9187C6.15947 16.0312 5.99072 16.1156 5.82197 16.1156Z"
-                            fill=""
-                          />
-                        </svg>
-                      </button>
-                    </li>
-                  </ul>
+              {/* Loading State */}
+              {loading ? (
+                <div className="flex items-center justify-center py-20">
+                  <div className="text-center">
+                    <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-blue border-r-transparent mb-4"></div>
+                    <p className="text-dark-4">Cargando productos...</p>
+                  </div>
                 </div>
-              </div>
-              {/* <!-- Products Pagination End --> */}
+              ) : sortedProducts.length === 0 ? (
+                <div className="flex items-center justify-center py-20">
+                  <p className="text-dark-4">No hay productos disponibles</p>
+                </div>
+              ) : (
+                <>
+                  {/* <!-- Products Grid/List Tab Content Start --> */}
+                  <div
+                    className={`${
+                      productStyle === "grid"
+                        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-7.5 gap-y-9"
+                        : "flex flex-col gap-7.5"
+                    }`}
+                  >
+                    {sortedProducts.map((item, key) =>
+                      productStyle === "grid" ? (
+                        <SingleGridItem item={item} key={key} />
+                      ) : (
+                        <SingleListItem item={item} key={key} />
+                      )
+                    )}
+                  </div>
+                  {/* <!-- Products Grid/List Tab Content End --> */}
+
+                  {/* <!-- Load More Button Start --> */}
+                  {hasMoreProducts && (
+                    <div className="flex justify-center mt-10">
+                      <button
+                        onClick={loadMoreProducts}
+                        disabled={loadingMore}
+                        className="inline-flex items-center gap-2 font-medium text-base py-3 px-8 rounded-lg bg-blue text-white ease-out duration-200 hover:bg-blue-dark disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {loadingMore ? (
+                          <>
+                            <div className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent"></div>
+                            <span>Cargando...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>Cargar más</span>
+                            <svg
+                              className="fill-current"
+                              width="18"
+                              height="18"
+                              viewBox="0 0 18 18"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M9 1.5C9.41421 1.5 9.75 1.83579 9.75 2.25V14.6893L14.4697 9.96967C14.7626 9.67678 15.2374 9.67678 15.5303 9.96967C15.8232 10.2626 15.8232 10.7374 15.5303 11.0303L9.53033 17.0303C9.23744 17.3232 8.76256 17.3232 8.46967 17.0303L2.46967 11.0303C2.17678 10.7374 2.17678 10.2626 2.46967 9.96967C2.76256 9.67678 3.23744 9.67678 3.53033 9.96967L8.25 14.6893V2.25C8.25 1.83579 8.58579 1.5 9 1.5Z"
+                                fill=""
+                              />
+                            </svg>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                  {/* <!-- Load More Button End --> */}
+                </>
+              )}
             </div>
             {/* // <!-- Content End --> */}
           </div>

@@ -157,7 +157,7 @@ export function UserMenu() {
               </Link>
 
               <Link
-                href="/shop-with-sidebar"
+                href="/shop-without-sidebar"
                 className="block px-4 py-2.5 hover:bg-gray-50 transition-colors"
                 onClick={() => setIsOpen(false)}
               >

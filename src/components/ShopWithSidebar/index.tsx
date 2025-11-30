@@ -99,7 +99,7 @@ const ShopWithSidebar = () => {
   return (
     <>
       <Breadcrumb
-        title={"Explore All Products"}
+        title={"Explora nuestros productos"}
         pages={["shop", "/", "shop with sidebar"]}
       />
       <section className="overflow-hidden relative pb-20 pt-5 lg:pt-12 xl:pt-14 bg-[#f3f4f6]">

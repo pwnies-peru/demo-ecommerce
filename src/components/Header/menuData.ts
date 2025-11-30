@@ -2,16 +2,10 @@ import { Menu } from "@/types/Menu";
 
 export const menuData: Menu[] = [
   {
-    id: 1,
-    title: "Popular",
-    newTab: false,
-    path: "/",
-  },
-  {
     id: 2,
     title: "Tienda",
     newTab: false,
-    path: "/shop-with-sidebar",
+    path: "/shop-without-sidebar",
   },
   {
     id: 6,
@@ -23,7 +17,7 @@ export const menuData: Menu[] = [
         id: 61,
         title: "Tienda con Barra Lateral",
         newTab: false,
-        path: "/shop-with-sidebar",
+        path: "/shop-without-sidebar",
       },
       {
         id: 62,
@@ -91,7 +85,7 @@ export const menuData: Menu[] = [
         id: 71,
         title: "Blog en Cuadrícula con Barra Lateral",
         newTab: false,
-        path: "/blogs/blog-grid-with-sidebar",
+        path: "/blogs/blog-grid-without-sidebar",
       },
       {
         id: 72,
@@ -103,7 +97,7 @@ export const menuData: Menu[] = [
         id: 73,
         title: "Detalles del Blog con Barra Lateral",
         newTab: false,
-        path: "/blogs/blog-details-with-sidebar",
+        path: "/blogs/blog-details-without-sidebar",
       },
       {
         id: 74,

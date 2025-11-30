@@ -1,8 +1,6 @@
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
 import ProductItem from "@/components/Common/ProductItem";
 import shopData from "@/components/Shop/shopData";
+import Link from "next/link";
 
 const NewArrival = () => {
   return (
@@ -39,7 +37,7 @@ const NewArrival = () => {
           </div>
 
           <Link
-            href="/shop-with-sidebar"
+            href="/shop-without-sidebar"
             className="inline-flex font-medium text-custom-sm py-2.5 px-7 rounded-md border-gray-3 border bg-gray-1 text-dark ease-out duration-200 hover:bg-dark hover:text-white hover:border-transparent"
           >
             Ver Todos

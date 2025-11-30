@@ -48,7 +48,7 @@ export function AutoLogin({ children }: { children: React.ReactNode }) {
           <h3 className="font-semibold text-xl text-dark mb-2">
             Preparando todo para ti...
           </h3>
-          <p className="text-dark-4">Preparando tu experiencia demo</p>
+          <p className="text-dark-4">Ya casi listo!</p>
         </div>
       </div>
     )

@@ -1,16 +1,33 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useCallback, useRef, useEffect } from "react";
-import data from "./categoryData";
+import { useCallback, useRef, useEffect, useState } from "react";
 import Image from "next/image";
+import { getStoreCategories, type StoreCategory } from "@/lib/supabase/queries-client";
+import { Category } from "@/types/category";
 
 // Import Swiper styles
 import "swiper/css/navigation";
 import "swiper/css";
 import SingleItem from "./SingleItem";
 
+// Default category images mapping
+const defaultCategoryImages: Record<string, string> = {
+  "default": "/images/categories/categories-01.png",
+};
+
+// Map StoreCategory to Category type
+const mapStoreCategoryToCategory = (storeCategory: StoreCategory, index: number): Category => {
+  return {
+    id: parseInt(storeCategory.id_engine || index.toString()),
+    title: storeCategory.name,
+    img: defaultCategoryImages[storeCategory.slug || ""] || defaultCategoryImages["default"],
+  };
+};
+
 const Categories = () => {
   const sliderRef = useRef(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const handlePrev = useCallback(() => {
     if (!sliderRef.current) return;
@@ -23,10 +40,47 @@ const Categories = () => {
   }, []);
 
   useEffect(() => {
-    if (sliderRef.current) {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const storeCategories = await getStoreCategories();
+        const mappedCategories = storeCategories.map((cat, index) => 
+          mapStoreCategoryToCategory(cat, index)
+        );
+        setCategories(mappedCategories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        // Keep empty array on error
+        setCategories([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (sliderRef.current && categories.length > 0) {
       sliderRef.current.swiper.init();
     }
-  }, []);
+  }, [categories]);
+
+  if (loading) {
+    return (
+      <section className="overflow-hidden pt-17.5">
+        <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 pb-15 border-b border-gray-3">
+          <div className="flex items-center justify-center py-10">
+            <div className="animate-pulse text-dark-4">Cargando categorías...</div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (categories.length === 0) {
+    return null;
+  }
 
   return (
     <section className="overflow-hidden pt-17.5">
@@ -134,7 +188,7 @@ const Categories = () => {
               },
             }}
           >
-            {data.map((item, key) => (
+            {categories.map((item, key) => (
               <SwiperSlide key={key}>
                 <SingleItem item={item} />
               </SwiperSlide>

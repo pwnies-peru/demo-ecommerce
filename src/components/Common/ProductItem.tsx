@@ -59,7 +59,7 @@ const ProductItem = ({ item }: { item: Product }) => {
 
   return (
     <Link
-      href="/shop-details"
+      href={`/shop-details/${item.slug || item.dbId || item.id}`}
       onClick={handleProductDetails}
       className="group block"
     >
@@ -68,8 +68,8 @@ const ProductItem = ({ item }: { item: Product }) => {
         <button
           onClick={handleAddToCart}
           className={`absolute top-3 right-3 z-10 flex items-center justify-center w-9 h-9 rounded-full border-2 ease-out duration-200 hover:scale-110 ${
-            quantityInCart > 0 
-              ? 'bg-blue text-white border-blue hover:bg-blue-dark hover:border-blue-dark' 
+            quantityInCart > 0
+              ? 'bg-blue text-white border-blue hover:bg-blue-dark hover:border-blue-dark'
               : 'bg-white text-dark border-gray-3 hover:bg-gray-50 hover:border-gray-4'
           }`}
         >
@@ -189,8 +189,7 @@ const ProductItem = ({ item }: { item: Product }) => {
       </h3>
 
       <span className="flex items-center gap-2 font-medium text-lg">
-        <span className="text-dark">${item.discountedPrice}</span>
-        <span className="text-dark-4 line-through">${item.price}</span>
+        <span className="text-dark">${item.price}</span>
       </span>
     </Link>
   );

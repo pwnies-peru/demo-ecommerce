@@ -1,22 +1,22 @@
 "use client";
 import React from "react";
 
-import { Product } from "@/types/product";
 import { useModalContext } from "@/app/context/QuickViewModalContext";
-import { updateQuickView } from "@/redux/features/quickView-slice";
 import { addItemToCart } from "@/redux/features/cart-slice";
+import { updateQuickView } from "@/redux/features/quickView-slice";
 import { addItemToWishlist } from "@/redux/features/wishlist-slice";
-import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import Link from "next/link";
+import { Product } from "@/types/product";
 import Image from "next/image";
+import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
 
 const SingleListItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
   const dispatch = useDispatch<AppDispatch>();
 
   // Get quantity of this item in cart
-  const cartItem = useSelector((state: RootState) => 
+  const cartItem = useSelector((state: RootState) =>
     state.cartReducer.items.find(cartItem => cartItem.id === item.id)
   );
   const quantityInCart = cartItem?.quantity || 0;
@@ -54,14 +54,14 @@ const SingleListItem = ({ item }: { item: Product }) => {
   };
 
   return (
-    <Link href="/shop-details" className="group block rounded-lg bg-white shadow-1">
+    <Link href={`/shop-details/${item.slug || item.dbId || item.id}`} className="group block rounded-lg bg-white shadow-1">
       <div className="flex relative">
         {/* Floating Add to Cart Button */}
         <button
           onClick={handleAddToCart}
           className={`absolute top-3 right-3 z-10 flex items-center justify-center w-9 h-9 rounded-full border-2 ease-out duration-200 hover:scale-110 ${
-            quantityInCart > 0 
-              ? 'bg-blue text-white border-blue hover:bg-blue-dark hover:border-blue-dark' 
+            quantityInCart > 0
+              ? 'bg-blue text-white border-blue hover:bg-blue-dark hover:border-blue-dark'
               : 'bg-white text-dark border-gray-3 hover:bg-gray-50 hover:border-gray-4'
           }`}
         >
@@ -147,8 +147,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
             </h3>
 
             <span className="flex items-center gap-2 font-medium text-lg">
-              <span className="text-dark">${item.discountedPrice}</span>
-              <span className="text-dark-4 line-through">${item.price}</span>
+              <span className="text-dark">${item.price}</span>
             </span>
           </div>
 
