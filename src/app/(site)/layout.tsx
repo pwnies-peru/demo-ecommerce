@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 import "../css/euclid-circular-a-font.css";
 import "../css/style.css";
 
+import { AIFlowTrigger } from "@/components/AI/AIFlowTrigger";
 import { AutoLogin } from "@/components/Auth/AutoLogin";
 import { CartLoader } from "@/components/Cart/CartLoader";
 import PermanentCartSidebar from "@/components/Common/PermanentCartSidebar";
@@ -60,6 +61,7 @@ export default function RootLayout({
 
                         <QuickViewModal />
                         <PreviewSliderModal />
+                        <AIFlowTrigger />
                       </PreviewSliderProvider>
                     </ModalProvider>
                   </CartModalProvider>
