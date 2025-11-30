@@ -11,6 +11,7 @@ const OrderSummary = ({ appliedCoupon }: OrderSummaryProps) => {
   const cartItems = useAppSelector((state) => state.cartReducer.items);
   const totalPrice = useSelector(selectTotalPrice);
   const [negotiatedItems, setNegotiatedItems] = useState<any[]>([]);
+  const [giftedItems, setGiftedItems] = useState<any[]>([]);
 
   useEffect(() => {
     const loadNegotiated = () => {
@@ -25,6 +26,21 @@ const OrderSummary = ({ appliedCoupon }: OrderSummaryProps) => {
     loadNegotiated();
     window.addEventListener('storage', loadNegotiated);
     return () => window.removeEventListener('storage', loadNegotiated);
+  }, []);
+
+  useEffect(() => {
+    const loadGifted = () => {
+      try {
+        const stored = localStorage.getItem('giftedItems');
+        setGiftedItems(stored ? JSON.parse(stored) : []);
+      } catch {
+        setGiftedItems([]);
+      }
+    };
+
+    loadGifted();
+    window.addEventListener('storage', loadGifted);
+    return () => window.removeEventListener('storage', loadGifted);
   }, []);
 
   const couponDiscount = appliedCoupon ? 15.00 : 0;
@@ -71,6 +87,22 @@ const OrderSummary = ({ appliedCoupon }: OrderSummaryProps) => {
               <div>
                 <p className="text-yellow-700 font-medium text-right">
                   S/ {(item.discountedPrice * item.quantity).toFixed(2)}
+                </p>
+              </div>
+            </div>
+          ))}
+
+          {giftedItems.map((item, key) => (
+            <div key={`gift-${key}`} className="flex items-center justify-between py-5 border-b border-gray-3 bg-green-50/50">
+              <div>
+                <p className="text-green-700 font-medium flex items-center gap-1">
+                  <span className="animate-pulse">🎁</span>
+                  {item.title} (Regalo)
+                </p>
+              </div>
+              <div>
+                <p className="text-green-700 font-bold text-right">
+                  ¡GRATIS!
                 </p>
               </div>
             </div>

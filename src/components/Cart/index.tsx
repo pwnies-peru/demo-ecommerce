@@ -1,20 +1,28 @@
 "use client";
 import { selectRegularItems } from "@/redux/features/cart-slice";
-import { useAppSelector } from "@/redux/store";
+import { AppDispatch, useAppSelector } from "@/redux/store";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { CartCouponOffer } from "../AI/CartCouponOffer";
+import { GiftedProductOffer } from "../AI/GiftedProductOffer";
 import Breadcrumb from "../Common/Breadcrumb";
 import Discount from "./Discount";
 import OrderSummary from "./OrderSummary";
 import SingleItem from "./SingleItem";
 
 const Cart = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const regularItems = useAppSelector(selectRegularItems);
   const [negotiatedItems, setNegotiatedItems] = useState<any[]>([]);
   const [showCouponOffer, setShowCouponOffer] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+  const [couponExpiresAt, setCouponExpiresAt] = useState<number | null>(null);
+  const [showGiftOffer, setShowGiftOffer] = useState(false);
+  const [giftProduct, setGiftProduct] = useState<any>(null);
+  const [giftExpiresAt, setGiftExpiresAt] = useState<number | null>(null);
+  const [giftedItems, setGiftedItems] = useState<any[]>([]);
 
   useEffect(() => {
     const loadNegotiated = () => {
@@ -31,23 +39,63 @@ const Cart = () => {
     return () => window.removeEventListener('storage', loadNegotiated);
   }, []);
 
+  // Load gifted items from localStorage
+  useEffect(() => {
+    const loadGifted = () => {
+      try {
+        const stored = localStorage.getItem('giftedItems');
+        setGiftedItems(stored ? JSON.parse(stored) : []);
+      } catch {
+        setGiftedItems([]);
+      }
+    };
+
+    loadGifted();
+    window.addEventListener('storage', loadGifted);
+    return () => window.removeEventListener('storage', loadGifted);
+  }, []);
+
   // Clear coupon data on mount (page refresh)
   useEffect(() => {
     // Clear session storage on page load/refresh
     sessionStorage.removeItem('showCartCoupon');
     sessionStorage.removeItem('cartCouponCode');
+    sessionStorage.removeItem('couponTimer');
+    sessionStorage.removeItem('showGiftOffer');
+    sessionStorage.removeItem('giftProduct');
+    sessionStorage.removeItem('giftTimer');
     
-    const checkCouponOffer = () => {
-      const show = sessionStorage.getItem('showCartCoupon');
+    const checkOffers = () => {
+      // Check coupon offer
+      const showCoupon = sessionStorage.getItem('showCartCoupon');
       const code = sessionStorage.getItem('cartCouponCode');
-      if (show === 'true' && code) {
+      const couponTimer = sessionStorage.getItem('couponTimer');
+      
+      if (showCoupon === 'true' && code) {
         setShowCouponOffer(true);
         setCouponCode(code);
+        setCouponExpiresAt(couponTimer ? parseInt(couponTimer) : null);
+      }
+      
+      // Check gift offer
+      const showGift = sessionStorage.getItem('showGiftOffer');
+      const productData = sessionStorage.getItem('giftProduct');
+      const giftTimer = sessionStorage.getItem('giftTimer');
+      
+      if (showGift === 'true' && productData) {
+        try {
+          const product = JSON.parse(productData);
+          setShowGiftOffer(true);
+          setGiftProduct(product);
+          setGiftExpiresAt(giftTimer ? parseInt(giftTimer) : null);
+        } catch (error) {
+          console.error('Failed to parse gift product:', error);
+        }
       }
     };
 
-    // Check after clearing (in case 'h' is pressed after mount)
-    const interval = setInterval(checkCouponOffer, 500);
+    // Check after clearing (in case 'h', 'j', or 'k' is pressed after mount)
+    const interval = setInterval(checkOffers, 500);
     return () => clearInterval(interval);
   }, []);
 
@@ -58,6 +106,38 @@ const Cart = () => {
   const handleCouponCopy = () => {
     // Auto-apply the coupon when copied
     setAppliedCoupon(couponCode);
+  };
+
+  const handleAcceptGift = () => {
+    if (!giftProduct) return;
+
+    // Add to gifted items in localStorage
+    const giftedItem = {
+      ...giftProduct,
+      price: 0,
+      discountedPrice: 0,
+      quantity: 1,
+      isGifted: true,
+      originalPrice: giftProduct.price,
+      giftedAt: new Date().toISOString(),
+    };
+
+    const existingGifted = JSON.parse(localStorage.getItem('giftedItems') || '[]');
+    localStorage.setItem('giftedItems', JSON.stringify([...existingGifted, giftedItem]));
+    window.dispatchEvent(new Event('storage'));
+
+    // Hide the offer
+    setShowGiftOffer(false);
+    sessionStorage.removeItem('showGiftOffer');
+    sessionStorage.removeItem('giftProduct');
+    sessionStorage.removeItem('giftTimer');
+  };
+
+  const handleDeclineGift = () => {
+    setShowGiftOffer(false);
+    sessionStorage.removeItem('showGiftOffer');
+    sessionStorage.removeItem('giftProduct');
+    sessionStorage.removeItem('giftTimer');
   };
 
   return (
@@ -177,6 +257,16 @@ const Cart = () => {
               isActive={showCouponOffer} 
               couponCode={couponCode}
               onCopy={handleCouponCopy}
+              expiresAt={couponExpiresAt}
+            />
+
+            {/* Gifted Product Offer */}
+            <GiftedProductOffer
+              isActive={showGiftOffer}
+              product={giftProduct}
+              expiresAt={giftExpiresAt}
+              onAccept={handleAcceptGift}
+              onDecline={handleDeclineGift}
             />
 
             <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-11 mt-9">

@@ -1,22 +1,54 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface CartCouponOfferProps {
   isActive: boolean;
   couponCode: string;
   onCopy?: () => void;
+  expiresAt?: number | null;
 }
 
-export function CartCouponOffer({ isActive, couponCode, onCopy }: CartCouponOfferProps) {
+export function CartCouponOffer({ isActive, couponCode, onCopy, expiresAt }: CartCouponOfferProps) {
   const [copied, setCopied] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!expiresAt) {
+      setTimeRemaining(null);
+      return;
+    }
+
+    const updateTimer = () => {
+      const now = Date.now();
+      const remaining = Math.max(0, expiresAt - now);
+      setTimeRemaining(remaining);
+
+      if (remaining === 0) {
+        // Timer expired - do nothing
+        console.log('⏰ Coupon timer expired');
+      }
+    };
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+
+    return () => clearInterval(interval);
+  }, [expiresAt]);
+
+  const formatTime = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(couponCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-    
+
     // Trigger parent callback
     if (onCopy) {
       onCopy();
@@ -32,7 +64,7 @@ export function CartCouponOffer({ isActive, couponCode, onCopy }: CartCouponOffe
       <div className="absolute top-2 right-2 text-2xl animate-pulse delay-300">✨</div>
       <div className="absolute bottom-2 left-1/4 text-xl animate-pulse delay-500">💫</div>
       <div className="absolute bottom-2 right-1/4 text-xl animate-pulse delay-700">💫</div>
-      
+
       <div className="flex items-center gap-6">
         {/* Blinker Guy */}
         <div className="flex-shrink-0">
@@ -49,13 +81,28 @@ export function CartCouponOffer({ isActive, couponCode, onCopy }: CartCouponOffe
 
         {/* Message and Coupon */}
         <div className="flex-1">
-          <h3 className="text-xl font-bold text-dark mb-2 flex items-center gap-2">
-            <span className="animate-bounce">✨</span>
-            ¡Tu carrito lleva esperándote un tiempo!
-            <span className="animate-bounce delay-200">🎁</span>
-          </h3>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xl font-bold text-dark flex items-center gap-2">
+              <span className="animate-bounce">✨</span>
+              {timeRemaining !== null ? '¡Oferta por Tiempo Limitado!' : '¡Tu carrito lleva esperándote un tiempo!'}
+            </h3>
+            {timeRemaining !== null && timeRemaining > 0 && (
+              <div className="bg-red text-white px-4 py-2 rounded-md font-bold text-lg animate-pulse flex items-center gap-2">
+                <span>⏰</span>
+                <span>{formatTime(timeRemaining)}</span>
+              </div>
+            )}
+            {timeRemaining === 0 && (
+              <div className="bg-gray-400 text-white px-4 py-2 rounded-md font-bold text-lg">
+                <span>⏰ Expirado</span>
+              </div>
+            )}
+          </div>
           <p className="text-dark-4 mb-4">
-            Permíteme darte un cupón especial para animarte a completar tu compra
+            {timeRemaining !== null
+              ? '¡Apúrate! Este cupón especial está disponible solo por tiempo limitado'
+              : 'Permíteme darte un cupón especial para animarte a completar tu compra'
+            }
           </p>
 
           {/* Coupon Code */}
@@ -101,7 +148,7 @@ export function CartCouponOffer({ isActive, couponCode, onCopy }: CartCouponOffe
             transform: translateY(0);
           }
         }
-        
+
         @keyframes pulse-slow {
           0%, 100% {
             opacity: 1;
@@ -110,7 +157,7 @@ export function CartCouponOffer({ isActive, couponCode, onCopy }: CartCouponOffe
             opacity: 0.7;
           }
         }
-        
+
         @keyframes pulse-border {
           0%, 100% {
             border-color: #fbbf24;
@@ -121,27 +168,27 @@ export function CartCouponOffer({ isActive, couponCode, onCopy }: CartCouponOffe
             box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2);
           }
         }
-        
+
         .animate-pulse-slow {
           animation: pulse-slow 3s ease-in-out infinite;
         }
-        
+
         .animate-pulse-border {
           animation: pulse-border 2s ease-in-out infinite;
         }
-        
+
         .delay-200 {
           animation-delay: 200ms;
         }
-        
+
         .delay-300 {
           animation-delay: 300ms;
         }
-        
+
         .delay-500 {
           animation-delay: 500ms;
         }
-        
+
         .delay-700 {
           animation-delay: 700ms;
         }

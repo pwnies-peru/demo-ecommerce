@@ -12,6 +12,14 @@ const nextConfig = {
       },
     ],
   },
+  // Ensure proper middleware handling in production
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
+  },
+  // Don't set output to standalone when deploying to Vercel
+  // Vercel handles this automatically
 };
 
 module.exports = nextConfig;

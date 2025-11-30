@@ -66,8 +66,57 @@ export function AIFlowTrigger() {
         // Store coupon in sessionStorage (for sharing with Cart component)
         sessionStorage.setItem('cartCouponCode', newCoupon);
         sessionStorage.setItem('showCartCoupon', 'true');
+        sessionStorage.removeItem('couponTimer'); // No timer for 'h'
         
         console.log('✅ Cart coupon generated:', newCoupon);
+      }
+      
+      if (e.key === 'j' || e.key === 'J') {
+        console.log('J key pressed! Triggering cart coupon offer with timer...');
+        const newCoupon = generateCoupon();
+        setCartCouponCode(newCoupon);
+        setShowCartCoupon(true);
+        setShowGlow(true);
+        
+        // Hide glow after 1.5 seconds
+        setTimeout(() => {
+          setShowGlow(false);
+        }, 1500);
+        
+        // Store coupon with timer (10 minutes = 600 seconds)
+        const expiresAt = Date.now() + (10 * 60 * 1000);
+        sessionStorage.setItem('cartCouponCode', newCoupon);
+        sessionStorage.setItem('showCartCoupon', 'true');
+        sessionStorage.setItem('couponTimer', expiresAt.toString());
+        
+        console.log('✅ Cart coupon with timer generated:', newCoupon);
+      }
+      
+      if (e.key === 'k' || e.key === 'K') {
+        console.log('K key pressed! Triggering gifted product offer...');
+        
+        if (products.length === 0) {
+          console.warn('No products available for gift offer');
+          return;
+        }
+        
+        // Select a random product
+        const randomProduct = products[Math.floor(Math.random() * products.length)];
+        
+        setShowGlow(true);
+        
+        // Hide glow after 1.5 seconds
+        setTimeout(() => {
+          setShowGlow(false);
+        }, 1500);
+        
+        // Store gift offer with timer (10 minutes)
+        const expiresAt = Date.now() + (10 * 60 * 1000);
+        sessionStorage.setItem('giftProduct', JSON.stringify(randomProduct));
+        sessionStorage.setItem('showGiftOffer', 'true');
+        sessionStorage.setItem('giftTimer', expiresAt.toString());
+        
+        console.log('✅ Gift product offer generated:', randomProduct.title);
       }
     };
 
