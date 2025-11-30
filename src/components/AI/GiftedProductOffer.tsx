@@ -52,9 +52,8 @@ export function GiftedProductOffer({
 
   const handleAccept = () => {
     setAccepted(true);
-    setTimeout(() => {
-      onAccept();
-    }, 1000);
+    onAccept(); // Add to cart immediately
+    // Don't close the offer - keep showing "Regalo Aceptado" message
   };
 
   if (!isActive || !product) return null;
@@ -137,7 +136,7 @@ export function GiftedProductOffer({
               <>
                 <button
                   onClick={handleAccept}
-                  className="bg-green-600 text-white px-8 py-3 rounded-md font-bold hover:bg-green-700 transition flex items-center gap-2"
+                  className="bg-dark text-white px-8 py-3 rounded-md font-bold hover:bg-dark/80 transition flex items-center gap-2"
                 >
                   <span className="text-xl">🎁</span>
                   <span>¡Aceptar Regalo!</span>

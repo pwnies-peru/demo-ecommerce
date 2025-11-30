@@ -98,7 +98,7 @@ const PermanentCartSidebar = () => {
       <div className="p-3 border-b border-gray-3 bg-gray-1">
         <p className="text-xs text-center text-dark-4">Total</p>
         <p className="text-sm font-bold text-center mb-2">S/ {totalPrice.toFixed(2)}</p>
-        <Link href="/checkout" className="block w-full text-xs text-center bg-blue text-white py-2 rounded hover:bg-blue-dark">
+        <Link href="/checkout" className="block w-full text-xs text-center bg-dark text-white py-2 rounded hover:bg-dark/80">
           Pagar
         </Link>
       </div>

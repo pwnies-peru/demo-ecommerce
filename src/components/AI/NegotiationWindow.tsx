@@ -179,7 +179,7 @@ export function NegotiationWindow({ isOpen, onClose, products }: NegotiationWind
           </div>
           <button
             onClick={() => setShowIntro(false)}
-            className="bg-blue text-white px-12 py-4 rounded-md font-bold text-xl hover:bg-blue-dark transition"
+            className="bg-dark text-white px-12 py-4 rounded-md font-bold text-xl hover:bg-dark/80 transition"
           >
             Comenzar Negociación
           </button>
@@ -252,7 +252,7 @@ export function NegotiationWindow({ isOpen, onClose, products }: NegotiationWind
             <button
               onClick={() => handleSwipe('right')}
               disabled={isAccepted}
-              className={`flex items-center gap-3 bg-blue text-white px-8 py-4 rounded-md font-bold text-lg transition ${
+              className={`flex items-center gap-3 bg-dark text-white px-8 py-4 rounded-md font-bold text-lg transition ${
                 isAccepted ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-dark'
               }`}
             >

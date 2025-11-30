@@ -156,7 +156,7 @@ const OrderSummary = ({ appliedCoupon }: OrderSummaryProps) => {
           {/* <!-- checkout button --> */}
           <button
             type="submit"
-            className="w-full flex justify-center font-medium text-white bg-blue py-3 px-6 rounded-md ease-out duration-200 hover:bg-blue-dark mt-7.5"
+            className="w-full flex justify-center font-medium text-white bg-dark py-3 px-6 rounded-md ease-out duration-200 hover:bg-dark/80 mt-7.5"
           >
             Process to Checkout
           </button>

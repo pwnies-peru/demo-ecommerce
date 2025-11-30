@@ -158,7 +158,7 @@ const ShopDetails = ({ productSlug }: { productSlug: string }) => {
               </p>
               <a
                 href="/shop-without-sidebar"
-                className="inline-block mt-6 px-6 py-3 bg-blue text-white rounded-lg hover:bg-blue-dark"
+                className="inline-block mt-6 px-6 py-3 bg-dark text-white rounded-lg hover:bg-dark/80"
               >
                 Ver todos los productos
               </a>
@@ -511,7 +511,7 @@ const ShopDetails = ({ productSlug }: { productSlug: string }) => {
 
                       <a
                         href="#"
-                        className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
+                        className="inline-flex font-medium text-white bg-dark py-3 px-7 rounded-md ease-out duration-200 hover:bg-dark/80"
                       >
                         Purchase Now
                       </a>
@@ -1266,7 +1266,7 @@ const ShopDetails = ({ productSlug }: { productSlug: string }) => {
 
                         <button
                           type="submit"
-                          className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
+                          className="inline-flex font-medium text-white bg-dark py-3 px-7 rounded-md ease-out duration-200 hover:bg-dark/80"
                         >
                           Submit Reviews
                         </button>

@@ -13,7 +13,7 @@ const Discount = ({ onApplyCoupon, appliedCoupon }: DiscountProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!couponCode.trim()) {
       setMessage('Por favor ingresa un código de cupón');
       setTimeout(() => setMessage(''), 3000);
@@ -53,18 +53,18 @@ const Discount = ({ onApplyCoupon, appliedCoupon }: DiscountProps) => {
               <button
                 type="submit"
                 disabled={!!appliedCoupon}
-                className="inline-flex font-medium text-white bg-blue py-3 px-8 rounded-md ease-out duration-200 hover:bg-blue-dark disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex font-medium text-white bg-dark py-3 px-8 rounded-md ease-out duration-200 hover:bg-dark/80 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {appliedCoupon ? 'Cupón Aplicado' : 'Aplicar Código'}
               </button>
             </div>
-            
+
             {message && (
               <p className={`mt-3 text-sm ${message.includes('✓') ? 'text-green-600' : 'text-red'}`}>
                 {message}
               </p>
             )}
-            
+
             {appliedCoupon && (
               <div className="mt-4 bg-green-50 border border-green-300 rounded-md p-3 relative overflow-hidden animate-[slideIn_0.5s_ease-out]">
                 <div className="absolute top-1 left-2 text-sm animate-pulse">✨</div>

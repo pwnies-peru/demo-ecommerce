@@ -64,24 +64,24 @@ const Cart = () => {
     sessionStorage.removeItem('showGiftOffer');
     sessionStorage.removeItem('giftProduct');
     sessionStorage.removeItem('giftTimer');
-    
+
     const checkOffers = () => {
       // Check coupon offer
       const showCoupon = sessionStorage.getItem('showCartCoupon');
       const code = sessionStorage.getItem('cartCouponCode');
       const couponTimer = sessionStorage.getItem('couponTimer');
-      
+
       if (showCoupon === 'true' && code) {
         setShowCouponOffer(true);
         setCouponCode(code);
         setCouponExpiresAt(couponTimer ? parseInt(couponTimer) : null);
       }
-      
+
       // Check gift offer
       const showGift = sessionStorage.getItem('showGiftOffer');
       const productData = sessionStorage.getItem('giftProduct');
       const giftTimer = sessionStorage.getItem('giftTimer');
-      
+
       if (showGift === 'true' && productData) {
         try {
           const product = JSON.parse(productData);
@@ -126,11 +126,8 @@ const Cart = () => {
     localStorage.setItem('giftedItems', JSON.stringify([...existingGifted, giftedItem]));
     window.dispatchEvent(new Event('storage'));
 
-    // Hide the offer
-    setShowGiftOffer(false);
-    sessionStorage.removeItem('showGiftOffer');
-    sessionStorage.removeItem('giftProduct');
-    sessionStorage.removeItem('giftTimer');
+    // Don't hide the offer - keep showing "Regalo Aceptado" message
+    // The offer will stay visible with the accepted state
   };
 
   const handleDeclineGift = () => {
@@ -253,8 +250,8 @@ const Cart = () => {
             )}
 
             {/* Cart Coupon Offer */}
-            <CartCouponOffer 
-              isActive={showCouponOffer} 
+            <CartCouponOffer
+              isActive={showCouponOffer}
               couponCode={couponCode}
               onCopy={handleCouponCopy}
               expiresAt={couponExpiresAt}

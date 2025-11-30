@@ -116,7 +116,7 @@ export function CartCouponOffer({ isActive, couponCode, onCopy, expiresAt }: Car
             </div>
             <button
               onClick={handleCopy}
-              className="bg-blue text-white px-6 py-3 rounded-md font-bold hover:bg-blue-dark transition flex items-center gap-2"
+              className="bg-dark text-white px-6 py-3 rounded-md font-bold hover:bg-dark/80 transition flex items-center gap-2"
             >
               {copied ? (
                 <>

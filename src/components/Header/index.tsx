@@ -42,8 +42,8 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed left-0 top-0 w-full z-9999 bg-yellow transition-all ease-in-out duration-300 pr-[220px] ${
-        stickyMenu && "shadow"
+      className={`fixed left-0 top-0 w-full z-9999 bg-white border-b-2 border-gray-3 transition-all ease-in-out duration-300 pr-[220px] ${
+        stickyMenu && "shadow-lg"
       }`}
     >
       <div className="max-w-[1170px] mx-auto px-4 sm:px-7.5 xl:px-0">
@@ -55,11 +55,8 @@ const Header = () => {
         >
           {/* <!-- Logo --> */}
           <Link className="flex-shrink-0 flex items-center gap-2" href="/">
-            <Image src="/images/logo/logoml1.png" alt="Logo" width={60} height={43} className="w-12 h-auto lg:w-[60px]" />
-            <h1 className="hidden lg:block text-2xl font-extrabold text-dark tracking-tight">
-                Mercadillo Libre
-              </h1>
-            </Link>
+            <Image src="/images/logo/logo2.png" alt="Logo" width={200} height={80} className="h-autoZ" />
+          </Link>
 
           {/* <!-- Search Bar --> */}
           <div className="flex-1 max-w-[600px]">
@@ -88,7 +85,7 @@ const Header = () => {
                   id="search"
                   placeholder="Buscar..."
                   autoComplete="off"
-                  className="custom-search w-full rounded-[5px] bg-white border border-gray-3 py-2.5 pl-10 pr-4 outline-none ease-in duration-200 text-sm focus:border-blue focus:ring-1 focus:ring-blue/20"
+                  className="custom-search w-full rounded-[5px] bg-white border-2 border-dark py-2.5 pl-10 pr-4 outline-none ease-in duration-200 text-sm focus:border-dark focus:shadow-lg"
                 />
                 </div>
               </form>
@@ -134,7 +131,7 @@ const Header = () => {
                       />
                     </svg>
 
-                    <span className="flex items-center justify-center font-medium text-2xs absolute -right-2 -top-2.5 bg-blue w-4.5 h-4.5 rounded-full text-white">
+                    <span className="flex items-center justify-center font-medium text-2xs absolute -right-2 -top-2.5 bg-dark w-4.5 h-4.5 rounded-full text-white border-2 border-white">
                       {product.length}
                     </span>
                   </span>
