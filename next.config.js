@@ -18,8 +18,15 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
   },
-  // Don't set output to standalone when deploying to Vercel
-  // Vercel handles this automatically
+  // Optimize for Vercel deployment
+  typescript: {
+    // Optionally ignore build errors in production (not recommended)
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    // Optionally ignore eslint errors during build
+    ignoreDuringBuilds: false,
+  },
 };
 
 module.exports = nextConfig;
