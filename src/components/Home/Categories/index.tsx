@@ -1,26 +1,30 @@
 "use client";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { useCallback, useRef, useEffect, useState } from "react";
-import Image from "next/image";
 import { getStoreCategories, type StoreCategory } from "@/lib/supabase/queries-client";
 import { Category } from "@/types/category";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
-import "swiper/css/navigation";
 import "swiper/css";
+import "swiper/css/navigation";
 import SingleItem from "./SingleItem";
 
-// Default category images mapping
-const defaultCategoryImages: Record<string, string> = {
-  "default": "/images/categories/categories-01.png",
-};
+// Category images array - cycles through based on index
+const categoryImages = [
+  "/images/categories/categories-01.png",
+  "/images/categories/categories-02.png",
+  "/images/categories/categories-03.png",
+  "/images/categories/categories-04.png",
+  "/images/categories/categories-05.png",
+  "/images/categories/categories-06.png",
+];
 
 // Map StoreCategory to Category type
 const mapStoreCategoryToCategory = (storeCategory: StoreCategory, index: number): Category => {
   return {
     id: parseInt(storeCategory.id_engine || index.toString()),
     title: storeCategory.name,
-    img: defaultCategoryImages[storeCategory.slug || ""] || defaultCategoryImages["default"],
+    img: categoryImages[index % categoryImages.length],
   };
 };
 
@@ -44,7 +48,7 @@ const Categories = () => {
       try {
         setLoading(true);
         const storeCategories = await getStoreCategories();
-        const mappedCategories = storeCategories.map((cat, index) => 
+        const mappedCategories = storeCategories.map((cat, index) =>
           mapStoreCategoryToCategory(cat, index)
         );
         setCategories(mappedCategories);
