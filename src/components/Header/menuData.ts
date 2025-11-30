@@ -14,12 +14,6 @@ export const menuData: Menu[] = [
     path: "/shop-with-sidebar",
   },
   {
-    id: 3,
-    title: "Contacto",
-    newTab: false,
-    path: "/contact",
-  },
-  {
     id: 6,
     title: "páginas",
     newTab: false,
@@ -72,12 +66,6 @@ export const menuData: Menu[] = [
         title: "Mi Cuenta",
         newTab: false,
         path: "/my-account",
-      },
-      {
-        id: 70,
-        title: "Contacto",
-        newTab: false,
-        path: "/contact",
       },
       {
         id: 62,

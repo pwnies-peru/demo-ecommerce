@@ -255,11 +255,6 @@ const Footer = () => {
                   Preguntas Frecuentes
                 </a>
               </li>
-              <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
-                  Contacto
-                </a>
-              </li>
             </ul>
           </div>
 

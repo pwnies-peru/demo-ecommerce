@@ -58,10 +58,10 @@ const SingleGridItem = ({ item }: { item: Product }) => {
         {/* Floating Add to Cart Button */}
         <button
           onClick={handleAddToCart}
-          className={`absolute top-3 right-3 z-10 flex items-center justify-center w-9 h-9 rounded-full shadow-lg ease-out duration-200 hover:scale-110 ${
+          className={`absolute top-3 right-3 z-10 flex items-center justify-center w-9 h-9 rounded-full border-2 ease-out duration-200 hover:scale-110 ${
             quantityInCart > 0 
-              ? 'bg-blue text-white hover:bg-blue-dark' 
-              : 'bg-white text-dark hover:bg-gray-50'
+              ? 'bg-blue text-white border-blue hover:bg-blue-dark hover:border-blue-dark' 
+              : 'bg-white text-dark border-gray-3 hover:bg-gray-50 hover:border-gray-4'
           }`}
         >
           {quantityInCart > 0 ? (
