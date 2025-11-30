@@ -1,16 +1,18 @@
-import Home from "@/components/Home";
-import { Metadata } from "next";
+import ShopWithoutSidebar from "@/components/ShopWithoutSidebar";
 
+import { Metadata } from "next";
 export const metadata: Metadata = {
-  title: "Mercadillo Libre | Tu tienda en línea",
-  description: "Mercadillo Libre, lo mejor en compras en línea.",
+  title: "Negocia Demo",
+  description: "Negocia te ayuda a cerrar tus ventas en caliente, no dejes que pase ni un minuto más",
   // other metadata
 };
 
-export default function HomePage() {
+const ShopWithoutSidebarPage = () => {
   return (
-    <>
-      <Home />
-    </>
+    <main>
+      <ShopWithoutSidebar />
+    </main>
   );
-}
+};
+
+export default ShopWithoutSidebarPage;
