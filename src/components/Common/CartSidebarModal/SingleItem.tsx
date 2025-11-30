@@ -1,13 +1,23 @@
-import React from "react";
-import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import Image from "next/image";
+import { useDispatch } from "react-redux";
 
 const SingleItem = ({ item, removeItemFromCart }) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleRemoveFromCart = () => {
+  const handleRemoveFromCart = async () => {
+    // Remove from Redux
     dispatch(removeItemFromCart(item.id));
+
+    // Sync with database
+    if (item.dbId) {
+      try {
+        const { syncRemoveFromCart } = await import('@/lib/services/cart-sync');
+        await syncRemoveFromCart(item.dbId);
+      } catch (error) {
+        console.error('Failed to sync cart removal with database:', error);
+      }
+    }
   };
 
   return (

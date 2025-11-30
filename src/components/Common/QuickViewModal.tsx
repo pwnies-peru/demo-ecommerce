@@ -1,14 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { useModalContext } from "@/app/context/QuickViewModalContext";
-import { AppDispatch, useAppSelector } from "@/redux/store";
-import { addItemToCart } from "@/redux/features/cart-slice";
-import { useDispatch } from "react-redux";
-import Image from "next/image";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
-import { resetQuickView } from "@/redux/features/quickView-slice";
+import { useModalContext } from "@/app/context/QuickViewModalContext";
+import { addItemToCart } from "@/redux/features/cart-slice";
 import { updateproductDetails } from "@/redux/features/product-details";
+import { AppDispatch, useAppSelector } from "@/redux/store";
+import Image from "next/image";
+import { useDispatch } from "react-redux";
 
 const QuickViewModal = () => {
   const { isModalOpen, closeModal } = useModalContext();
@@ -30,13 +29,24 @@ const QuickViewModal = () => {
   };
 
   // add to cart
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    // Add to Redux
     dispatch(
       addItemToCart({
         ...product,
         quantity,
       })
     );
+
+    // Sync with database
+    if (product.dbId) {
+      try {
+        const { syncAddToCart } = await import('@/lib/services/cart-sync');
+        await syncAddToCart(product.dbId, quantity);
+      } catch (error) {
+        console.error('Failed to sync cart with database:', error);
+      }
+    }
 
     closeModal();
   };

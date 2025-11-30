@@ -6,7 +6,8 @@ import "../css/euclid-circular-a-font.css";
 import "../css/style.css";
 
 import { AutoLogin } from "@/components/Auth/AutoLogin";
-import CartSidebarModal from "@/components/Common/CartSidebarModal";
+import { CartLoader } from "@/components/Cart/CartLoader";
+import PermanentCartSidebar from "@/components/Common/PermanentCartSidebar";
 import PreviewSliderModal from "@/components/Common/PreviewSlider";
 import QuickViewModal from "@/components/Common/QuickViewModal";
 import { ReduxProvider } from "@/redux/provider";
@@ -46,14 +47,18 @@ export default function RootLayout({
             <AuthProvider>
               <AutoLogin>
                 <ReduxProvider>
+                  <CartLoader />
                   <CartModalProvider>
                     <ModalProvider>
                       <PreviewSliderProvider>
+                        <PermanentCartSidebar />
                         <Header />
-                        {children}
+                        <div className="pr-[100px]">
+                          {children}
+                        </div>
+                        <Footer />
 
                         <QuickViewModal />
-                        <CartSidebarModal />
                         <PreviewSliderModal />
                       </PreviewSliderProvider>
                     </ModalProvider>
@@ -62,7 +67,6 @@ export default function RootLayout({
               </AutoLogin>
             </AuthProvider>
             <ScrollToTop />
-            <Footer />
           </>
         )}
       </body>

@@ -230,5 +230,68 @@ CREATE TABLE public.shopping_cart_item (
     quantity integer NOT NULL CHECK (quantity > 0),
 
     created_at timestamptz NOT NULL DEFAULT now(),
-    updated_at timestamptz NOT NULL DEFAULT now()
+    updated_at timestamptz NOT NULL DEFAULT now(),
+
+    -- Ensure one product per user (prevents duplicates)
+    CONSTRAINT shopping_cart_item_user_product_unique UNIQUE (user_id, store_product_id)
 );
+
+-- Function to upsert cart items (add or update quantity)
+CREATE OR REPLACE FUNCTION upsert_cart_item(
+    p_user_id uuid,
+    p_store_id varchar(36),
+    p_store_product_id varchar(36),
+    p_quantity_to_add integer DEFAULT 1
+)
+RETURNS TABLE (
+    cart_id uuid,
+    cart_user_id uuid,
+    cart_store_id varchar(36),
+    cart_store_product_id varchar(36),
+    cart_quantity integer,
+    cart_created_at timestamptz,
+    cart_updated_at timestamptz
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    INSERT INTO shopping_cart_item (user_id, store_id, store_product_id, quantity)
+    VALUES (p_user_id, p_store_id, p_store_product_id, p_quantity_to_add)
+    ON CONFLICT (user_id, store_product_id)
+    DO UPDATE SET
+        quantity = shopping_cart_item.quantity + p_quantity_to_add,
+        updated_at = now()
+    RETURNING
+        shopping_cart_item.id,
+        shopping_cart_item.user_id,
+        shopping_cart_item.store_id,
+        shopping_cart_item.store_product_id,
+        shopping_cart_item.quantity,
+        shopping_cart_item.created_at,
+        shopping_cart_item.updated_at;
+END;
+$$;
+
+-- Function to set cart item quantity (replace, not add)
+CREATE OR REPLACE FUNCTION set_cart_item_quantity(
+    p_user_id uuid,
+    p_store_product_id varchar(36),
+    p_quantity integer
+)
+RETURNS void
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF p_quantity <= 0 THEN
+        -- Remove item if quantity is 0 or less
+        DELETE FROM shopping_cart_item
+        WHERE user_id = p_user_id AND store_product_id = p_store_product_id;
+    ELSE
+        -- Update quantity
+        UPDATE shopping_cart_item
+        SET quantity = p_quantity, updated_at = now()
+        WHERE user_id = p_user_id AND store_product_id = p_store_product_id;
+    END IF;
+END;
+$$;

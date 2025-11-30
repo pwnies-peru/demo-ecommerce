@@ -16,7 +16,7 @@ const SingleGridItem = ({ item }: { item: Product }) => {
 
   // Get quantity of this item in cart
   const cartItem = useSelector((state: RootState) =>
-    state.cartReducer.items.find(cartItem => cartItem.id === item.id)
+    state.cartReducer.items.find(cartItem => cartItem.dbId === item.dbId)
   );
   const quantityInCart = cartItem?.quantity || 0;
 
@@ -29,15 +29,27 @@ const SingleGridItem = ({ item }: { item: Product }) => {
   };
 
   // add to cart
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // Add to Redux
     dispatch(
       addItemToCart({
         ...item,
         quantity: 1,
       })
     );
+
+    // Sync with database
+    if (item.dbId) {
+      try {
+        const { syncAddToCart } = await import('@/lib/services/cart-sync');
+        await syncAddToCart(item.dbId, 1);
+      } catch (error) {
+        console.error('Failed to sync cart with database:', error);
+      }
+    }
   };
 
   const handleItemToWishList = (e: React.MouseEvent) => {

@@ -1,5 +1,4 @@
 "use client";
-import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
 import { UserMenu } from "@/components/Auth/UserMenu";
 import { selectTotalPrice } from "@/redux/features/cart-slice";
 import { useAppSelector } from "@/redux/store";
@@ -14,14 +13,8 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
-  const { openCartModal } = useCartModalContext();
-
   const product = useAppSelector((state) => state.cartReducer.items);
   const totalPrice = useSelector(selectTotalPrice);
-
-  const handleOpenCartModal = () => {
-    openCartModal();
-  };
 
   // Sticky menu
   const handleStickyMenu = () => {
@@ -49,7 +42,7 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed left-0 top-0 w-full z-9999 bg-yellow transition-all ease-in-out duration-300 ${
+      className={`fixed left-0 top-0 w-full z-9999 bg-yellow transition-all ease-in-out duration-300 pr-[100px] ${
         stickyMenu && "shadow"
       }`}
     >
@@ -105,8 +98,8 @@ const Header = () => {
           <div className="flex items-center gap-4">
             <UserMenu />
 
-            <button
-              onClick={handleOpenCartModal}
+            <Link
+              href="/cart"
               className="flex items-center gap-2.5"
             >
               <span className="inline-block relative">
@@ -151,10 +144,10 @@ const Header = () => {
                   carrito
                 </span>
                 <p className="font-medium text-custom-sm text-dark">
-                  ${totalPrice}
+                  ${totalPrice.toFixed(2)}
                 </p>
               </div>
-            </button>
+            </Link>
 
             {/* <!-- Hamburger Toggle BTN --> */}
             <button

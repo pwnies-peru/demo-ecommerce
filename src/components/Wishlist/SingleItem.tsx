@@ -1,9 +1,8 @@
-import React from "react";
 import { AppDispatch } from "@/redux/store";
 import { useDispatch } from "react-redux";
 
-import { removeItemFromWishlist } from "@/redux/features/wishlist-slice";
 import { addItemToCart } from "@/redux/features/cart-slice";
+import { removeItemFromWishlist } from "@/redux/features/wishlist-slice";
 
 import Image from "next/image";
 
@@ -14,13 +13,24 @@ const SingleItem = ({ item }) => {
     dispatch(removeItemFromWishlist(item.id));
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    // Add to Redux
     dispatch(
       addItemToCart({
         ...item,
         quantity: 1,
       })
     );
+
+    // Sync with database
+    if (item.dbId) {
+      try {
+        const { syncAddToCart } = await import('@/lib/services/cart-sync');
+        await syncAddToCart(item.dbId, 1);
+      } catch (error) {
+        console.error('Failed to sync cart with database:', error);
+      }
+    }
   };
 
   return (

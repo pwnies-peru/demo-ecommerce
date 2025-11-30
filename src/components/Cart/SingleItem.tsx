@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { AppDispatch } from "@/redux/store";
-import { useDispatch } from "react-redux";
 import {
   removeItemFromCart,
   updateCartItemQuantity,
 } from "@/redux/features/cart-slice";
+import { AppDispatch } from "@/redux/store";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 import Image from "next/image";
 
@@ -13,19 +13,56 @@ const SingleItem = ({ item }) => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleRemoveFromCart = () => {
+  const handleRemoveFromCart = async () => {
+    // Remove from Redux
     dispatch(removeItemFromCart(item.id));
+
+    // Sync with database
+    if (item.dbId) {
+      try {
+        const { syncRemoveFromCart } = await import('@/lib/services/cart-sync');
+        await syncRemoveFromCart(item.dbId);
+      } catch (error) {
+        console.error('Failed to sync cart removal with database:', error);
+      }
+    }
   };
 
-  const handleIncreaseQuantity = () => {
-    setQuantity(quantity + 1);
-    dispatch(updateCartItemQuantity({ id: item.id, quantity: quantity + 1 }));
+  const handleIncreaseQuantity = async () => {
+    const newQuantity = quantity + 1;
+    setQuantity(newQuantity);
+
+    // Update Redux
+    dispatch(updateCartItemQuantity({ id: item.id, quantity: newQuantity }));
+
+    // Sync with database
+    if (item.dbId) {
+      try {
+        const { syncUpdateQuantity } = await import('@/lib/services/cart-sync');
+        await syncUpdateQuantity(item.dbId, newQuantity);
+      } catch (error) {
+        console.error('Failed to sync quantity update with database:', error);
+      }
+    }
   };
 
-  const handleDecreaseQuantity = () => {
+  const handleDecreaseQuantity = async () => {
     if (quantity > 1) {
-      setQuantity(quantity - 1);
-      dispatch(updateCartItemQuantity({ id: item.id, quantity: quantity - 1 }));
+      const newQuantity = quantity - 1;
+      setQuantity(newQuantity);
+
+      // Update Redux
+      dispatch(updateCartItemQuantity({ id: item.id, quantity: newQuantity }));
+
+      // Sync with database
+      if (item.dbId) {
+        try {
+          const { syncUpdateQuantity } = await import('@/lib/services/cart-sync');
+          await syncUpdateQuantity(item.dbId, newQuantity);
+        } catch (error) {
+          console.error('Failed to sync quantity update with database:', error);
+        }
+      }
     } else {
       return;
     }
@@ -50,7 +87,7 @@ const SingleItem = ({ item }) => {
       </div>
 
       <div className="min-w-[180px]">
-        <p className="text-dark">${item.discountedPrice}</p>
+        <p className="text-dark">${item.discountedPrice.toFixed(2)}</p>
       </div>
 
       <div className="min-w-[275px]">
@@ -106,7 +143,7 @@ const SingleItem = ({ item }) => {
       </div>
 
       <div className="min-w-[200px]">
-        <p className="text-dark">${item.discountedPrice * quantity}</p>
+        <p className="text-dark">${(item.discountedPrice * quantity).toFixed(2)}</p>
       </div>
 
       <div className="min-w-[50px] flex justify-end">

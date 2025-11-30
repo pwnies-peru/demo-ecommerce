@@ -3,10 +3,12 @@ import { RootState } from "../store";
 
 type InitialState = {
   items: CartItem[];
+  syncing: boolean;
 };
 
 type CartItem = {
   id: number;
+  dbId?: string; // Database UUID for syncing
   title: string;
   price: number;
   discountedPrice: number;
@@ -19,6 +21,7 @@ type CartItem = {
 
 const initialState: InitialState = {
   items: [],
+  syncing: false,
 };
 
 export const cart = createSlice({
@@ -26,7 +29,7 @@ export const cart = createSlice({
   initialState,
   reducers: {
     addItemToCart: (state, action: PayloadAction<CartItem>) => {
-      const { id, title, price, quantity, discountedPrice, imgs } =
+      const { id, dbId, title, price, quantity, discountedPrice, imgs } =
         action.payload;
       const existingItem = state.items.find((item) => item.id === id);
 
@@ -35,6 +38,7 @@ export const cart = createSlice({
       } else {
         state.items.push({
           id,
+          dbId,
           title,
           price,
           quantity,
@@ -62,15 +66,27 @@ export const cart = createSlice({
     removeAllItemsFromCart: (state) => {
       state.items = [];
     },
+
+    // New action: Load cart from database
+    loadCartFromDB: (state, action: PayloadAction<CartItem[]>) => {
+      state.items = action.payload;
+    },
+
+    // Set syncing state
+    setSyncing: (state, action: PayloadAction<boolean>) => {
+      state.syncing = action.payload;
+    },
   },
 });
 
 export const selectCartItems = (state: RootState) => state.cartReducer.items;
 
 export const selectTotalPrice = createSelector([selectCartItems], (items) => {
-  return items.reduce((total, item) => {
+  const total = items.reduce((total, item) => {
     return total + item.discountedPrice * item.quantity;
   }, 0);
+  // Round to 2 decimal places to avoid floating-point errors
+  return Math.round(total * 100) / 100;
 });
 
 export const {
@@ -78,5 +94,7 @@ export const {
   removeItemFromCart,
   updateCartItemQuantity,
   removeAllItemsFromCart,
+  loadCartFromDB,
+  setSyncing,
 } = cart.actions;
 export default cart.reducer;

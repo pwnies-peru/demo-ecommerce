@@ -1,14 +1,13 @@
 "use client";
-import React from "react";
-import { Product } from "@/types/product";
 import { useModalContext } from "@/app/context/QuickViewModalContext";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
-import { updateQuickView } from "@/redux/features/quickView-slice";
 import { addItemToCart } from "@/redux/features/cart-slice";
+import { updateQuickView } from "@/redux/features/quickView-slice";
+import { addItemToWishlist } from "@/redux/features/wishlist-slice";
+import { AppDispatch } from "@/redux/store";
+import { Product } from "@/types/product";
 import Image from "next/image";
 import Link from "next/link";
-import { addItemToWishlist } from "@/redux/features/wishlist-slice";
+import { useDispatch } from "react-redux";
 
 const SingleItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
@@ -20,13 +19,24 @@ const SingleItem = ({ item }: { item: Product }) => {
   };
 
   // add to cart
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    // Add to Redux
     dispatch(
       addItemToCart({
         ...item,
         quantity: 1,
       })
     );
+
+    // Sync with database
+    if (item.dbId) {
+      try {
+        const { syncAddToCart } = await import('@/lib/services/cart-sync');
+        await syncAddToCart(item.dbId, 1);
+      } catch (error) {
+        console.error('Failed to sync cart with database:', error);
+      }
+    }
   };
 
   const handleItemToWishList = () => {
