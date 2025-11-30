@@ -142,12 +142,6 @@ export function GiftedProductOffer({
                   <span>¡Aceptar Regalo!</span>
                   <span className="animate-bounce">✨</span>
                 </button>
-                <button
-                  onClick={onDecline}
-                  className="bg-gray-400 text-white px-6 py-3 rounded-md font-medium hover:bg-gray-500 transition"
-                >
-                  No, gracias
-                </button>
               </>
             ) : accepted ? (
               <div className="bg-green-100 text-green-700 px-8 py-3 rounded-md font-bold flex items-center gap-2">

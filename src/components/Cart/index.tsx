@@ -65,6 +65,10 @@ const Cart = () => {
     sessionStorage.removeItem('giftProduct');
     sessionStorage.removeItem('giftTimer');
 
+    // Clear gifted items on page refresh
+    localStorage.removeItem('giftedItems');
+    window.dispatchEvent(new Event('storage'));
+
     const checkOffers = () => {
       // Check coupon offer
       const showCoupon = sessionStorage.getItem('showCartCoupon');
